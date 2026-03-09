@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jowie Orlina Flores | AI Automation Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+  <style>
+    :root {
+      --bg:#0a0a0f; --fg:#e0e0e0; --card:#12121a; --muted:#1c1c2e;
+      --muted-fg:#6b7280; --accent:#00ff88; --accent2:#ff00ff; --accent3:#00d4ff;
+      --border:#2a2a3a; --destructive:#ff3366;
+      --glow:0 0 8px #00ff88,0 0 20px #00ff8840;
+      --glow-lg:0 0 10px #00ff88,0 0 30px #00ff8860,0 0 60px #00ff8820;
+      --glow2:0 0 8px #ff00ff,0 0 20px #ff00ff60;
+      --glow3:0 0 8px #00d4ff,0 0 20px #00d4ff60;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--fg);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden;position:relative;cursor:none}
+    #cursor{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .15s,height .15s;box-shadow:var(--glow)}
+    #cursor-ring{position:fixed;width:32px;height:32px;border:1px solid var(--accent);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:all .08s;opacity:.5}
+    body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:9999}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+    h1,h2,h3{font-family:'Orbitron',monospace;text-transform:uppercase}
+    .chamfer{clip-path:polygon(0 12px,12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px))}
+    .chamfer-sm{clip-path:polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px))}
+
+    @keyframes blink{50%{opacity:0}}
+    @keyframes glitch{0%,100%{transform:translate(0);clip-path:inset(0 0 0 0)}10%{transform:translate(-3px,2px) skewX(-2deg);clip-path:inset(10% 0 60% 0)}20%{transform:translate(3px,-2px) skewX(2deg);clip-path:inset(60% 0 10% 0)}30%{transform:translate(-2px,-2px);clip-path:inset(0 0 0 0)}40%{transform:translate(2px,2px) skewX(1deg);clip-path:inset(30% 0 50% 0)}50%,90%{transform:translate(0);clip-path:inset(0 0 0 0)}}
+    @keyframes rgbShift{0%,100%{text-shadow:-2px 0 #ff00ff,2px 0 #00d4ff,0 0 20px rgba(0,255,136,.4)}50%{text-shadow:2px 0 #ff00ff,-2px 0 #00d4ff,0 0 30px rgba(0,255,136,.6)}}
+    @keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:1}97%{opacity:.5}98%{opacity:1}}
+    @keyframes scanmove{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
+    @keyframes rotate-hue{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeInRight{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    @keyframes pulse-border{0%,100%{border-color:var(--accent);box-shadow:var(--glow)}50%{border-color:var(--accent3);box-shadow:var(--glow3)}}
+    @keyframes node-ping{0%{transform:scale(1);opacity:1}100%{transform:scale(2.5);opacity:0}}
+    @keyframes tag-float-1{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(-1deg)}}
+    @keyframes tag-float-2{0%,100%{transform:translateY(0) rotate(4deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+    @keyframes tag-float-3{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(1deg)}}
+    @keyframes tag-float-4{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-9px) rotate(-2deg)}}
+    @keyframes tag-float-5{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-7px) rotate(-3deg)}}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1rem;color:var(--accent);text-shadow:var(--glow);text-decoration:none;letter-spacing:.1em;animation:flicker 6s infinite}
+    .nav-logo span{color:var(--fg);text-shadow:none}
+    .nav-links{display:flex;gap:.25rem;list-style:none}
+    .nav-links a{font-family:'Share Tech Mono',monospace;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted-fg);text-decoration:none;padding:.4rem .8rem;border:1px solid transparent;transition:all 150ms}
+    .nav-links a:hover,.nav-links a.active{color:var(--accent);border-color:var(--accent);text-shadow:var(--glow);box-shadow:var(--glow)}
+    .nav-cta{background:var(--accent)!important;color:var(--bg)!important;font-weight:700;border:none!important}
+    .nav-cta:hover{background:var(--bg)!important;color:var(--accent)!important;border:1px solid var(--accent)!important}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .hamburger span{width:24px;height:2px;background:var(--accent);display:block}
+    @media(max-width:768px){.nav-links{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,10,15,.97);flex-direction:column;padding:1rem;border-bottom:1px solid var(--border)}.nav-links.open{display:flex}.hamburger{display:flex}}
+
+    section{position:relative;z-index:1}
+    .section-wrap{max-width:1200px;margin:0 auto;padding:6rem 2rem}
+    .section-tag{font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+    .section-tag::before{content:'//';color:var(--accent3)}
+    .section-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;letter-spacing:.05em;line-height:1.1;margin-bottom:1.5rem}
+
+    /* HERO */
+    #hero{min-height:100vh;display:flex;align-items:center;padding-top:64px;overflow:hidden}
+    .hero-inner{max-width:1200px;margin:0 auto;padding:4rem 2rem;display:grid;grid-template-columns:1.1fr .9fr;gap:4rem;align-items:center;width:100%}
+    .hero-status{display:inline-flex;align-items:center;gap:.5rem;font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:.3rem .8rem;margin-bottom:1.5rem;box-shadow:var(--glow);animation:fadeInUp .6s ease forwards,pulse-border 3s 2s ease-in-out infinite}
+    .status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:var(--glow);animation:blink 1.5s step-end infinite}
+    .hero-name{font-size:clamp(2.8rem,6vw,5.2rem);font-weight:900;line-height:.95;letter-spacing:.04em;color:var(--fg);animation:fadeInUp .6s .1s ease both,rgbShift 4s 2s ease-in-out infinite;margin-bottom:.3rem}
+    .hero-name span{color:var(--accent);text-shadow:var(--glow-lg)}
+    .hero-title-wrap{margin-bottom:1.5rem;animation:fadeInUp .6s .2s ease both}
+    .hero-title{font-family:'Share Tech Mono',monospace;font-size:clamp(.85rem,2vw,1rem);color:var(--accent3);letter-spacing:.15em;text-transform:uppercase;text-shadow:var(--glow3)}
+    .typewriter{display:inline-block;border-right:2px solid var(--accent);padding-right:3px;animation:blink .8s step-end infinite}
+    .hero-desc{font-size:.88rem;color:var(--muted-fg);line-height:1.9;max-width:500px;margin-bottom:2rem;animation:fadeInUp .6s .3s ease both}
+    .hero-desc strong{color:var(--fg)}
+    .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeInUp .6s .4s ease both}
+    .btn{font-family:'Share Tech Mono',monospace;text-transform:uppercase;letter-spacing:.15em;font-size:.75rem;padding:.75rem 1.5rem;cursor:none;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;transition:all 150ms;border:none}
+    .btn-primary{background:var(--accent);color:var(--bg);font-weight:700}
+    .btn-primary:hover{background:var(--bg);color:var(--accent);outline:2px solid var(--accent);box-shadow:var(--glow-lg)}
+    .btn-outline{background:transparent;color:var(--accent);border:2px solid var(--accent);box-shadow:var(--glow)}
+    .btn-outline:hover{background:var(--accent);color:var(--bg);box-shadow:var(--glow-lg)}
+    .btn-ghost{background:transparent;color:var(--muted-fg);border:1px solid var(--border)}
+    .btn-ghost:hover{color:var(--accent);border-color:var(--accent);box-shadow:var(--glow)}
+    .hero-stats{display:flex;margin-top:2.5rem;animation:fadeInUp .6s .5s ease both}
+    .hero-stat{padding:.75rem 1.25rem;border:1px solid var(--border);border-right:none;flex:1}
+    .hero-stat:last-child{border-right:1px solid var(--border)}
+    .stat-num{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--accent);text-shadow:var(--glow);display:block}
+    .stat-label{font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--muted-fg);text-transform:uppercase}
+
+    /* Photo zone */
+    .hero-visual{position:relative;display:flex;flex-direction:column;align-items:center;animation:fadeInRight .8s .2s ease both}
+    .photo-zone{position:relative;width:340px;height:400px}
+    .hero-photo-wrap{position:relative;display:block;width:290px;height:330px;margin:30px auto 0}
+    .hero-photo-wrap::before{content:'';position:absolute;inset:-3px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3),var(--accent));background-size:300% 300%;animation:rotate-hue 4s linear infinite;z-index:-1}
+    .hero-photo{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;filter:grayscale(15%) contrast(1.1)}
+    .photo-placeholder{width:100%;height:100%;background:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;color:var(--muted-fg);font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.15em}
+    .photo-placeholder .icon{font-size:2.5rem;color:var(--accent);opacity:.4}
+    .hud-tl,.hud-tr,.hud-bl,.hud-br{position:absolute;width:18px;height:18px;border-color:var(--accent);border-style:solid;box-shadow:var(--glow)}
+    .hud-tl{top:-6px;left:-6px;border-width:2px 0 0 2px}
+    .hud-tr{top:-6px;right:-6px;border-width:2px 2px 0 0}
+    .hud-bl{bottom:-6px;left:-6px;border-width:0 0 2px 2px}
+    .hud-br{bottom:-6px;right:-6px;border-width:0 2px 2px 0}
+    .hud-scan{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(0,255,136,.04) 50%,transparent 100%);animation:scanmove 3s linear infinite;pointer-events:none}
+    .hud-label{position:absolute;bottom:-1.8rem;left:0;right:0;text-align:center;font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:var(--accent3);text-shadow:var(--glow3)}
+
+    /* Floating skill tags */
+    .float-tag{position:absolute;font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid;white-space:nowrap;z-index:10;cursor:none;transition:all 200ms}
+    .float-tag:hover{transform:scale(1.08)!important}
+    .float-tag::before{content:'◆ ';font-size:.5rem}
+    .float-tag.t1{top:0;left:-50px;color:var(--accent);border-color:var(--accent);background:rgba(0,255,136,.08);box-shadow:var(--glow);animation:tag-float-1 4s ease-in-out infinite}
+    .float-tag.t2{top:70px;right:-55px;color:var(--accent2);border-color:var(--accent2);background:rgba(255,0,255,.08);box-shadow:var(--glow2);animation:tag-float-2 5s ease-in-out infinite}
+    .float-tag.t3{bottom:110px;left:-65px;color:var(--accent3);border-color:var(--accent3);background:rgba(0,212,255,.08);box-shadow:var(--glow3);animation:tag-float-3 4.5s ease-in-out infinite}
+    .float-tag.t4{bottom:40px;right:-50px;color:var(--accent);border-color:var(--accent);background:rgba(0,255,136,.08);box-shadow:var(--glow);animation:tag-float-4 3.8s ease-in-out infinite}
+    .float-tag.t5{top:160px;left:-75px;color:#ffaa00;border-color:#ffaa00;background:rgba(255,170,0,.08);box-shadow:0 0 8px #ffaa00,0 0 20px #ffaa0040;animation:tag-float-5 5.2s ease-in-out infinite}
+
+    .avail-badge{margin-top:2.5rem;display:inline-flex;align-items:center;gap:.6rem;border:1px solid rgba(0,255,136,.3);padding:.5rem 1rem;background:rgba(0,255,136,.05);font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase}
+    .avail-ring{width:8px;height:8px;border-radius:50%;background:var(--accent);position:relative;flex-shrink:0}
+    .avail-ring::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--accent);animation:node-ping 1.5s ease-out infinite}
+
+    @media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:3rem}.photo-zone{width:280px;height:330px}.hero-photo-wrap{width:240px;height:280px}.float-tag.t1{left:-5px}.float-tag.t3{left:-5px}.float-tag.t5{display:none}}
+
+    /* MARQUEE */
+    .neon-strip{background:var(--muted);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:.75rem 0}
+    .neon-strip-inner{display:flex;animation:marquee 25s linear infinite;white-space:nowrap;width:max-content}
+    .neon-strip-item{font-family:'Share Tech Mono',monospace;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);opacity:.55;padding:0 2rem}
+    .neon-strip-item::after{content:'◈';color:var(--accent3);margin-left:2rem}
+
+    /* WHY HIRE ME */
+    #why{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+    .why-card{padding:1.75rem;border:1px solid var(--border);position:relative;overflow:hidden;transition:all 200ms;background:var(--bg)}
+    .why-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));transform:scaleX(0);transform-origin:left;transition:transform 300ms}
+    .why-card:hover{border-color:var(--accent);box-shadow:var(--glow);transform:translateY(-3px)}
+    .why-card:hover::after{transform:scaleX(1)}
+    .why-icon{font-size:2rem;margin-bottom:.75rem}
+    .why-big{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:var(--accent);text-shadow:var(--glow);line-height:1.1}
+    .why-label{font-family:'Orbitron',monospace;font-size:.68rem;letter-spacing:.1em;color:var(--fg);text-transform:uppercase;margin:.4rem 0 .6rem}
+    .why-desc{font-size:.77rem;color:var(--muted-fg);line-height:1.7}
+    @media(max-width:768px){.why-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.why-grid{grid-template-columns:1fr}}
+
+    /* ABOUT */
+    #about{border-top:1px solid var(--border)}
+    .about-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:4rem;align-items:start}
+    .about-terminal{background:var(--bg);border:1px solid var(--border)}
+    .terminal-bar{background:var(--muted);padding:.5rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border)}
+    .dot{width:8px;height:8px;border-radius:50%}
+    .dot-r{background:#ff5f57}.dot-y{background:#febc2e}.dot-g{background:#28c840}
+    .terminal-title{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--muted-fg);letter-spacing:.1em;margin-left:auto}
+    .terminal-body{padding:1.5rem}
+    .terminal-line{font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:2}
+    .t-prompt{color:var(--accent)}.t-cmd{color:var(--fg)}.t-comment{color:var(--muted-fg)}.t-string{color:var(--accent3)}.t-key{color:var(--accent2)}
+    .cursor{display:inline-block;width:8px;height:1em;background:var(--accent);animation:blink 1s step-end infinite;vertical-align:text-bottom}
+    .about-text{color:var(--muted-fg);line-height:1.9;font-size:.87rem;margin-bottom:1.25rem}
+    .about-text strong{color:var(--fg)}
+    .skill-bars{margin-top:2rem;display:flex;flex-direction:column;gap:.9rem}
+    .skill-bar-header{display:flex;justify-content:space-between;margin-bottom:.3rem}
+    .skill-bar-name{font-family:'Share Tech Mono',monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg)}
+    .skill-bar-pct{font-family:'Orbitron',monospace;font-size:.65rem;color:var(--accent);text-shadow:var(--glow)}
+    .skill-bar-track{height:4px;background:var(--border);overflow:hidden}
+    .skill-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px var(--accent)}
+    @media(max-width:768px){.about-grid{grid-template-columns:1fr;gap:2rem}}
+
+    /* WORKFLOWS */
+    #workflows{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .flow-diagram{margin:2.5rem 0}
+    .flow-nodes{display:flex;align-items:center;justify-content:space-between;position:relative;padding:.5rem 0}
+    .flow-nodes::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),var(--accent),var(--border),transparent);z-index:0}
+    .flow-node{background:var(--bg);border:1px solid var(--border);padding:1rem 1rem;text-align:center;position:relative;z-index:1;transition:all 250ms;cursor:none;flex:1;max-width:148px}
+    .flow-node:hover,.flow-node.active-node{border-color:var(--accent);box-shadow:var(--glow);transform:translateY(-4px)}
+    .flow-node-icon{font-size:1.4rem;display:block;margin-bottom:.3rem}
+    .flow-node-name{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-fg);transition:color 200ms}
+    .flow-node:hover .flow-node-name,.flow-node.active-node .flow-node-name{color:var(--accent)}
+    .flow-node-ping{position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:var(--glow)}
+    .flow-node-ping::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--accent);animation:node-ping 2s ease-out infinite}
+    .flow-arrow{color:var(--accent);font-size:.85rem;opacity:.4;flex-shrink:0;padding:0 .2rem;text-shadow:var(--glow)}
+    #node-detail{margin-top:1rem;padding:1rem 1.25rem;border:1px solid var(--accent);background:rgba(0,255,136,.04);font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--accent3);letter-spacing:.08em;min-height:52px;transition:all 250ms;line-height:1.6}
+
+    .expertise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2rem}
+    .expertise-card{background:var(--bg);border:1px solid var(--border);padding:1.4rem;transition:all 200ms;cursor:none}
+    .expertise-card:hover{border-color:var(--accent2);box-shadow:var(--glow2)}
+    .expertise-icon{font-size:1.4rem;margin-bottom:.65rem}
+    .expertise-title{font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;color:var(--accent2);text-transform:uppercase;margin-bottom:.65rem;text-shadow:var(--glow2)}
+    .expertise-list{list-style:none}
+    .expertise-list li{font-size:.73rem;color:var(--muted-fg);padding:.18rem 0;letter-spacing:.04em}
+    .expertise-list li::before{content:'> ';color:var(--accent)}
+    @media(max-width:900px){.expertise-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.expertise-grid{grid-template-columns:1fr}}
+
+    .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem}
+    .project-card{background:var(--bg);border:1px solid var(--border);padding:1.5rem;transition:all 200ms;position:relative;overflow:hidden;cursor:none}
+    .project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));transform:scaleX(0);transform-origin:left;transition:transform 300ms}
+    .project-card:hover{border-color:var(--accent);box-shadow:var(--glow);transform:translateY(-3px)}
+    .project-card:hover::before{transform:scaleX(1)}
+    .project-num{font-family:'Orbitron',monospace;font-size:.62rem;color:var(--accent);letter-spacing:.2em;margin-bottom:.75rem;opacity:.5}
+    .project-name{font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;letter-spacing:.05em;color:var(--fg);margin-bottom:.65rem;text-transform:uppercase;line-height:1.3}
+    .project-desc{font-size:.77rem;color:var(--muted-fg);line-height:1.7;margin-bottom:1rem}
+    .project-impact{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--accent);text-shadow:var(--glow);letter-spacing:.1em;display:flex;align-items:center;gap:.4rem}
+    .project-impact::before{content:'↑';font-size:.8rem}
+    .project-tag{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.1em;color:var(--accent3);border:1px solid rgba(0,212,255,.25);padding:.12rem .45rem;margin-right:.3rem;margin-bottom:.4rem;text-transform:uppercase}
+    @media(max-width:900px){.projects-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.projects-grid{grid-template-columns:1fr}}
+
+    /* EXPERIENCE */
+    #experience{border-top:1px solid var(--border)}
+    .impact-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);margin:3rem 0}
+    .impact-cell{padding:2rem 1.25rem;border-right:1px solid var(--border);text-align:center;transition:all 200ms;cursor:none}
+    .impact-cell:last-child{border-right:none}
+    .impact-cell:hover{background:rgba(0,255,136,.03)}
+    .impact-num{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--accent);text-shadow:var(--glow);display:block}
+    .impact-desc{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.12em;color:var(--muted-fg);text-transform:uppercase;margin-top:.4rem}
+    .tools-title{font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.2em;color:var(--accent3);text-transform:uppercase;margin-bottom:1.25rem;text-shadow:var(--glow3)}
+    .tools-row{display:flex;flex-wrap:wrap;gap:.5rem}
+    .tool-badge{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .65rem;border:1px solid var(--border);color:var(--muted-fg);transition:all 150ms;cursor:none}
+    .tool-badge:hover{border-color:var(--accent3);color:var(--accent3);box-shadow:var(--glow3)}
+    @media(max-width:768px){.impact-row{grid-template-columns:1fr 1fr}.impact-cell{border-bottom:1px solid var(--border)}.impact-cell:nth-child(2),.impact-cell:nth-child(4){border-right:none}}
+
+    /* TRUST */
+    #trust{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .trust-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-top:2.5rem}
+    .trust-card{border:1px solid var(--border);padding:1.75rem;background:var(--bg);transition:all 200ms}
+    .trust-card:hover{border-color:var(--accent);box-shadow:var(--glow)}
+    .trust-stars{color:var(--accent);font-size:.75rem;margin-bottom:.75rem;text-shadow:var(--glow)}
+    .trust-quote{font-size:.82rem;color:var(--fg);line-height:1.8;margin-bottom:1.25rem;font-style:italic}
+    .trust-quote::before{content:'"';color:var(--accent);font-size:2rem;font-family:'Orbitron',monospace;line-height:0;vertical-align:-.5rem;margin-right:.3rem}
+    .trust-author{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--accent3);letter-spacing:.15em;text-transform:uppercase}
+    .trust-role{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted-fg);letter-spacing:.1em;margin-top:.2rem}
+    @media(max-width:768px){.trust-strip{grid-template-columns:1fr}}
+
+    /* CONTACT */
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:3rem}
+    .contact-info{display:flex;flex-direction:column;gap:1rem}
+    .contact-item{background:var(--card);border:1px solid var(--border);padding:1.1rem 1.4rem;display:flex;align-items:center;gap:1rem;transition:all 150ms;text-decoration:none;cursor:none}
+    .contact-item:hover{border-color:var(--accent);box-shadow:var(--glow)}
+    .contact-item-icon{font-size:1.1rem;color:var(--accent);text-shadow:var(--glow);min-width:26px;text-align:center}
+    .contact-item-label{font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.15em;color:var(--muted-fg);text-transform:uppercase}
+    .contact-item-value{font-size:.8rem;color:var(--fg);margin-top:.12rem}
+    .contact-form{display:flex;flex-direction:column;gap:1rem}
+    .form-group{display:flex;flex-direction:column;gap:.4rem}
+    .form-label{font-family:'Share Tech Mono',monospace;font-size:.63rem;letter-spacing:.15em;color:var(--accent);text-transform:uppercase}
+    .form-input{background:var(--muted);border:1px solid var(--border);color:var(--fg);padding:.7rem .7rem .7rem 2rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;outline:none;width:100%;transition:all 200ms;cursor:text}
+    .form-input:focus{border-color:var(--accent);box-shadow:var(--glow)}
+    .input-wrap{position:relative}
+    .input-wrap::before{content:'>';position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:.8rem;pointer-events:none}
+    textarea.form-input{resize:vertical;min-height:110px;padding-top:.7rem}
+    .input-wrap-ta::before{top:.8rem;transform:none}
+    @media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+
+    /* CALENDLY */
+    .calendly-wrap{margin-top:3rem;border:1px solid var(--border);overflow:hidden;position:relative}
+    .calendly-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));animation:rotate-hue 4s linear infinite;z-index:10}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--border);padding:2rem;background:var(--card)}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .footer-logo{font-family:'Orbitron',monospace;font-size:.9rem;font-weight:900;color:var(--accent);text-shadow:var(--glow)}
+    .footer-copy{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--muted-fg);letter-spacing:.1em}
+    .footer-links{display:flex;gap:1rem}
+    .footer-links a{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted-fg);text-decoration:none;transition:color 150ms}
+    .footer-links a:hover{color:var(--accent)}
+
+    .cyber-divider{height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent3),var(--accent2),transparent);opacity:.35}
+
+    .glitch-text{position:relative;display:inline-block}
+    .glitch-text::before,.glitch-text::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
+    .glitch-text::before{color:var(--accent2);animation:glitch 7s 2s steps(1) infinite;clip-path:polygon(0 0,100% 0,100% 35%,0 35%)}
+    .glitch-text::after{color:var(--accent3);animation:glitch 7s 2.4s steps(1) infinite;clip-path:polygon(0 65%,100% 65%,100% 100%,0 100%)}
+
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .reveal-left{opacity:0;transform:translateX(-20px);transition:opacity .6s ease,transform .6s ease}
+    .reveal-left.visible{opacity:1;transform:translateX(0)}
+    .reveal-right{opacity:0;transform:translateX(20px);transition:opacity .6s ease,transform .6s ease}
+    .reveal-right.visible{opacity:1;transform:translateX(0)}
+
+    #progress-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));z-index:10000;width:0;box-shadow:var(--glow)}
+  </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">JOF<span>.EXE</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" onclick="closeNav()">About</a></li>
+    <li><a href="#workflows" onclick="closeNav()">Workflows</a></li>
+    <li><a href="#experience" onclick="closeNav()">Experience</a></li>
+    <li><a href="#contact" onclick="closeNav()">Contact</a></li>
+    <li><a href="#letstalk" class="nav-cta" onclick="closeNav()">Let's Talk</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- MARQUEE -->
+<div class="neon-strip" style="margin-top:64px">
+  <div class="neon-strip-inner">
+    <span class="neon-strip-item">N8N Expert</span>
+    <span class="neon-strip-item">AI Workflow Architect</span>
+    <span class="neon-strip-item">CRM Automation</span>
+    <span class="neon-strip-item">OpenAI Agents</span>
+    <span class="neon-strip-item">RAG Systems</span>
+    <span class="neon-strip-item">Data Analyst</span>
+    <span class="neon-strip-item">Web Developer</span>
+    <span class="neon-strip-item">Make.com</span>
+    <span class="neon-strip-item">Zapier</span>
+    <span class="neon-strip-item">Go High Level</span>
+    <span class="neon-strip-item">Supabase</span>
+    <span class="neon-strip-item">HubSpot</span>
+    <span class="neon-strip-item">N8N Expert</span>
+    <span class="neon-strip-item">AI Workflow Architect</span>
+    <span class="neon-strip-item">CRM Automation</span>
+    <span class="neon-strip-item">OpenAI Agents</span>
+    <span class="neon-strip-item">RAG Systems</span>
+    <span class="neon-strip-item">Data Analyst</span>
+    <span class="neon-strip-item">Web Developer</span>
+    <span class="neon-strip-item">Make.com</span>
+    <span class="neon-strip-item">Zapier</span>
+    <span class="neon-strip-item">Go High Level</span>
+    <span class="neon-strip-item">Supabase</span>
+    <span class="neon-strip-item">HubSpot</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-status"><span class="status-dot"></span>SYSTEM ONLINE // AVAILABLE FOR PROJECTS</div>
+      <h1 class="hero-name glitch-text" data-text="JOWIE FLORES">JOWIE<br><span>FLORES</span></h1>
+      <div class="hero-title-wrap">
+        <div class="hero-title">// <span id="typewriter" class="typewriter"></span></div>
+      </div>
+      <p class="hero-desc">
+        <strong>AI-powered automation architect</strong> who turns manual chaos into intelligent systems. I build workflows that <strong>qualify leads, sync CRMs, publish content, and close deals</strong> — while you sleep.
+      </p>
+      <div class="hero-actions">
+        <a href="#letstalk" class="btn btn-primary chamfer-sm">⚡ Book a Free Call</a>
+        <a href="#workflows" class="btn btn-outline chamfer-sm">See My Work</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="stat-num counter" data-target="100" data-suffix="+">0</span><span class="stat-label">Automations Built</span></div>
+        <div class="hero-stat"><span class="stat-num counter" data-target="500" data-suffix="h">0</span><span class="stat-label">Hours Saved/Mo</span></div>
+        <div class="hero-stat"><span class="stat-num">0%</span><span class="stat-label">CRM Error Rate</span></div>
+        <div class="hero-stat"><span class="stat-num counter" data-target="40" data-suffix="%">0</span><span class="stat-label">Avg Engagement↑</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="photo-zone">
+        <div class="float-tag t1">N8N Expert</div>
+        <div class="float-tag t2">AI Developer</div>
+        <div class="float-tag t3">Data Analyst</div>
+        <div class="float-tag t4">Web Developer</div>
+        <div class="float-tag t5">CRM Architect</div>
+        <div class="hero-photo-wrap chamfer">
+          <div class="hud-tl"></div><div class="hud-tr"></div>
+          <div class="hud-bl"></div><div class="hud-br"></div>
+          <div class="hud-scan"></div>
+          <img src="display_pic.jpg" alt="Jowie Orlina Flores" class="hero-photo chamfer"
+               onerror="this.style.display='none';document.getElementById('photo-fallback').style.display='flex'"/>
+          <div id="photo-fallback" class="photo-placeholder chamfer" style="display:none">
+            <div class="icon">◈</div>
+            <div>JOWIE O. FLORES</div>
+            <div style="color:var(--accent);opacity:.5;font-size:.58rem">[ place display_pic.jpg here ]</div>
+          </div>
+        </div>
+        <div class="hud-label" style="font-family:'Share Tech Mono',monospace">// IDENTITY_VERIFIED :: JOF.EXE v2.5</div>
+      </div>
+      <div class="avail-badge">
+        <div class="avail-ring"></div>
+        OPEN TO NEW PROJECTS — FAST TURNAROUND
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- WHY HIRE ME -->
+<section id="why">
+  <div class="section-wrap">
+    <div class="section-tag">WHY HIRE ME</div>
+    <h2 class="section-title">THE REAL <span style="color:var(--accent)">DIFFERENCE</span></h2>
+    <div class="why-grid">
+      <div class="why-card chamfer reveal">
+        <div class="why-icon">🚀</div>
+        <div class="why-big"><span class="counter" data-target="90">0</span>%</div>
+        <div class="why-label">Less Manual Work</div>
+        <p class="why-desc">My AI agents handle lead classification, follow-ups, and CRM updates autonomously. Your team focuses on closing, not clicking.</p>
+      </div>
+      <div class="why-card chamfer reveal" style="transition-delay:.1s">
+        <div class="why-icon">⚡</div>
+        <div class="why-big">Secs</div>
+        <div class="why-label">Lead Response Time</div>
+        <p class="why-desc">Reduced from hours to seconds. The moment a lead hits your funnel, my systems qualify, tag, and route them — instantly.</p>
+      </div>
+      <div class="why-card chamfer reveal" style="transition-delay:.2s">
+        <div class="why-icon">🧠</div>
+        <div class="why-big">RAG</div>
+        <div class="why-label">AI With Your Knowledge</div>
+        <p class="why-desc">Retrieval-Augmented Generation systems trained on your docs, your CRM, your voice. AI that actually knows your business.</p>
+      </div>
+      <div class="why-card chamfer reveal" style="transition-delay:.3s">
+        <div class="why-icon">🔒</div>
+        <div class="why-big">0%</div>
+        <div class="why-label">CRM Error Rate</div>
+        <p class="why-desc">Built-in deduplication, error logging, and Slack alerts. My systems are engineered for reliability, not just speed.</p>
+      </div>
+      <div class="why-card chamfer reveal" style="transition-delay:.4s">
+        <div class="why-icon">📈</div>
+        <div class="why-big"><span class="counter" data-target="40">0</span>%</div>
+        <div class="why-label">Avg Campaign Boost</div>
+        <p class="why-desc">Clients see 40%+ improvement in outbound engagement after deploying my AI-driven follow-up sequences.</p>
+      </div>
+      <div class="why-card chamfer reveal" style="transition-delay:.5s">
+        <div class="why-icon">⏱️</div>
+        <div class="why-big"><span class="counter" data-target="500">0</span>h</div>
+        <div class="why-label">Saved Every Month</div>
+        <p class="why-desc">Across all my active client systems, we collectively save over 500 hours of manual work per month. That's real ROI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="section-tag">ABOUT</div>
+    <h2 class="section-title">WHO <span style="color:var(--accent)">AM I</span></h2>
+    <div class="about-grid">
+      <div class="reveal-left">
+        <div class="about-terminal chamfer">
+          <div class="terminal-bar">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="terminal-title">profile.sh — bash</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line"><span class="t-prompt">$ </span><span class="t-cmd">cat profile.json</span></div>
+            <br>
+            <div class="terminal-line"><span class="t-key">"name"</span><span class="t-comment">: </span><span class="t-string">"Jowie Orlina Flores"</span><span class="t-comment">,</span></div>
+            <div class="terminal-line"><span class="t-key">"title"</span><span class="t-comment">: </span><span class="t-string">"AI Automation Architect"</span><span class="t-comment">,</span></div>
+            <div class="terminal-line"><span class="t-key">"stack"</span><span class="t-comment">: </span><span class="t-string">"N8N · Make · Zapier · AI"</span><span class="t-comment">,</span></div>
+            <div class="terminal-line"><span class="t-key">"phone"</span><span class="t-comment">: </span><span class="t-string">"09394911140"</span><span class="t-comment">,</span></div>
+            <div class="terminal-line"><span class="t-key">"automations"</span><span class="t-comment">: </span><span style="color:var(--accent);font-family:'Orbitron',monospace">100</span><span class="t-comment">+,</span></div>
+            <div class="terminal-line"><span class="t-key">"hours_saved_mo"</span><span class="t-comment">: </span><span style="color:var(--accent);font-family:'Orbitron',monospace">500</span><span class="t-comment">,</span></div>
+            <div class="terminal-line"><span class="t-key">"status"</span><span class="t-comment">: </span><span class="t-string" style="color:var(--accent)">"AVAILABLE"</span></div>
+            <br>
+            <div class="terminal-line"><span class="t-prompt">$ </span><span class="t-cmd">_</span><span class="cursor"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <p class="about-text">I'm <strong>Jowie Orlina Flores</strong> — an AI automation architect who builds intelligent, no-code workflow systems that integrate CRMs, marketing tools, and productivity platforms to <strong>eliminate manual work and maximize ROI</strong>.</p>
+        <p class="about-text">I don't just connect apps. I engineer systems that <strong>think, qualify, route, and act</strong> — from AI-driven SDR agents and RAG knowledge bases to fully automated content pipelines and real-time CRM sync engines.</p>
+        <p class="about-text">Every workflow I ship is production-ready, documented, and built to scale — so your team grows revenue without growing headcount.</p>
+        <div class="skill-bars">
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">N8N / Make.com / Zapier</span><span class="skill-bar-pct">98%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="98%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">AI Integration (OpenAI / Gemini)</span><span class="skill-bar-pct">95%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="95%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">CRM Systems (HubSpot / GHL)</span><span class="skill-bar-pct">96%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="96%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Data Analysis & Reporting</span><span class="skill-bar-pct">90%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90%"></div></div>
+          </div>
+          <div class="skill-bar-item">
+            <div class="skill-bar-header"><span class="skill-bar-name">Web Development</span><span class="skill-bar-pct">85%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- WORKFLOWS -->
+<section id="workflows">
+  <div class="section-wrap">
+    <div class="section-tag">WORKFLOWS</div>
+    <h2 class="section-title">WHAT I <span style="color:var(--accent)">BUILD</span></h2>
+
+    <!-- Interactive flow diagram -->
+    <div class="flow-diagram reveal">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--muted-fg);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem">// LIVE AI AUTOMATION PIPELINE — CLICK TO INSPECT EACH STAGE</div>
+      <div class="flow-nodes">
+        <div class="flow-node chamfer active-node" id="fn0" onclick="selectNode(0)">
+          <div class="flow-node-ping"></div>
+          <span class="flow-node-icon">📥</span>
+          <div class="flow-node-name">Trigger</div>
+        </div>
+        <div class="flow-arrow">──▶</div>
+        <div class="flow-node chamfer" id="fn1" onclick="selectNode(1)">
+          <span class="flow-node-icon">🧠</span>
+          <div class="flow-node-name">AI Process</div>
+        </div>
+        <div class="flow-arrow">──▶</div>
+        <div class="flow-node chamfer" id="fn2" onclick="selectNode(2)">
+          <span class="flow-node-icon">🔀</span>
+          <div class="flow-node-name">Route & Tag</div>
+        </div>
+        <div class="flow-arrow">──▶</div>
+        <div class="flow-node chamfer" id="fn3" onclick="selectNode(3)">
+          <span class="flow-node-icon">📊</span>
+          <div class="flow-node-name">CRM Update</div>
+        </div>
+        <div class="flow-arrow">──▶</div>
+        <div class="flow-node chamfer" id="fn4" onclick="selectNode(4)">
+          <span class="flow-node-icon">📤</span>
+          <div class="flow-node-name">Notify</div>
+        </div>
+        <div class="flow-arrow">──▶</div>
+        <div class="flow-node chamfer" id="fn5" onclick="selectNode(5)">
+          <span class="flow-node-icon">✅</span>
+          <div class="flow-node-name">Done</div>
+        </div>
+      </div>
+      <div id="node-detail">▶ Email reply received from prospect via Instantly.ai — workflow triggered automatically</div>
+    </div>
+
+    <!-- Expertise -->
+    <div class="expertise-grid" style="margin-top:3rem">
+      <div class="expertise-card chamfer reveal"><div class="expertise-icon">⚡</div><div class="expertise-title">Workflow Automation</div><ul class="expertise-list"><li>N8N</li><li>Zapier</li><li>Make.com</li><li>API Integrations</li><li>Webhooks</li></ul></div>
+      <div class="expertise-card chamfer reveal" style="transition-delay:.1s"><div class="expertise-icon">🧠</div><div class="expertise-title">AI Integration</div><ul class="expertise-list"><li>ChatGPT / OpenAI Agents</li><li>Google Gemini AI</li><li>Microsoft Copilot Studio</li><li>RAG Systems</li></ul></div>
+      <div class="expertise-card chamfer reveal" style="transition-delay:.2s"><div class="expertise-icon">🔗</div><div class="expertise-title">CRM Systems</div><ul class="expertise-list"><li>HubSpot</li><li>Go High Level</li><li>ActiveCampaign</li><li>Systeme.io</li><li>Airtable</li></ul></div>
+      <div class="expertise-card chamfer reveal" style="transition-delay:.3s"><div class="expertise-icon">⚙️</div><div class="expertise-title">Process Automation</div><ul class="expertise-list"><li>Asana / Monday.com</li><li>Trello / Notion</li><li>Google Workspace</li><li>Slack</li></ul></div>
+      <div class="expertise-card chamfer reveal" style="transition-delay:.4s"><div class="expertise-icon">🛒</div><div class="expertise-title">E-Commerce</div><ul class="expertise-list"><li>Shopify</li><li>Stripe</li><li>WooCommerce</li><li>Order Sync</li><li>Invoice Triggers</li></ul></div>
+      <div class="expertise-card chamfer reveal" style="transition-delay:.5s"><div class="expertise-icon">📊</div><div class="expertise-title">Data Handling</div><ul class="expertise-list"><li>Google Sheets</li><li>Xero</li><li>Supabase</li><li>Notion Databases</li></ul></div>
+    </div>
+
+    <!-- Projects -->
+    <div style="margin-top:4rem">
+      <div class="section-tag">NOTABLE PROJECTS</div>
+      <div class="projects-grid">
+        <div class="project-card chamfer reveal">
+          <div class="project-num">PROJECT_01</div>
+          <div class="project-name">Hermes – AI SDR Agent</div>
+          <p class="project-desc">Full sales development workflow triggered by Instantly replies. Google Calendar, Slack, and AI to auto-schedule meetings, classify responses, and craft personalized follow-ups.</p>
+          <div class="project-tags"><span class="project-tag">N8N</span><span class="project-tag">OpenAI</span><span class="project-tag">Google Calendar</span></div>
+          <div class="project-impact">Reduced manual SDR time by 90%</div>
+        </div>
+        <div class="project-card chamfer reveal" style="transition-delay:.1s">
+          <div class="project-num">PROJECT_02</div>
+          <div class="project-name">Blitz SDR Automation</div>
+          <p class="project-desc">Multi-layered AI email follow-up and lead qualification engine. OpenAI with Gmail, Google Sheets, and CRMs. Auto-tagged contacts and escalated to humans when needed.</p>
+          <div class="project-tags"><span class="project-tag">OpenAI</span><span class="project-tag">Gmail</span><span class="project-tag">CRM</span></div>
+          <div class="project-impact">+40% outbound campaign engagement</div>
+        </div>
+        <div class="project-card chamfer reveal" style="transition-delay:.2s">
+          <div class="project-num">PROJECT_03</div>
+          <div class="project-name">CRM Bridge: Systeme → GHL</div>
+          <p class="project-desc">Dual sync between Systeme.io and GHL pipelines. Automated contact updates, product routing, and tag cleanup with error logging, Slack alerts, and deduplication safeguards.</p>
+          <div class="project-tags"><span class="project-tag">Systeme.io</span><span class="project-tag">Go High Level</span><span class="project-tag">Slack</span></div>
+          <div class="project-impact">Saved 8–10 hrs/week, 0% CRM errors</div>
+        </div>
+        <div class="project-card chamfer reveal" style="transition-delay:.3s">
+          <div class="project-num">PROJECT_04</div>
+          <div class="project-name">RAG Supabase AI Agent</div>
+          <p class="project-desc">Retrieval-Augmented Generation system in N8N. Supabase, Google Drive, and OpenAI embeddings for document-aware chat and automated query responses.</p>
+          <div class="project-tags"><span class="project-tag">N8N</span><span class="project-tag">Supabase</span><span class="project-tag">OpenAI</span></div>
+          <div class="project-impact">Fully autonomous knowledge base</div>
+        </div>
+        <div class="project-card chamfer reveal" style="transition-delay:.4s">
+          <div class="project-num">PROJECT_05</div>
+          <div class="project-name">Content Repurposing AI Flow</div>
+          <p class="project-desc">Zapier automation turning video uploads into full content packages. Transcribed, generated blogs and posts via ChatGPT, auto-published to Instagram & LinkedIn.</p>
+          <div class="project-tags"><span class="project-tag">Zapier</span><span class="project-tag">ChatGPT</span><span class="project-tag">Instagram</span></div>
+          <div class="project-impact">Saved 15+ hours per content cycle</div>
+        </div>
+        <div class="project-card chamfer reveal" style="transition-delay:.5s">
+          <div class="project-num">PROJECT_06</div>
+          <div class="project-name">Notion Data Hub for CRM</div>
+          <p class="project-desc">Massive Notion automation syncing daily updates from multiple CRMs. GHL, Airtable, and custom webhooks. Scales to hundreds of client records daily.</p>
+          <div class="project-tags"><span class="project-tag">Notion</span><span class="project-tag">GHL</span><span class="project-tag">Airtable</span></div>
+          <div class="project-impact">Scales to hundreds of clients daily</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="section-tag">EXPERIENCE</div>
+    <h2 class="section-title">RESULTS &amp; <span style="color:var(--accent)">IMPACT</span></h2>
+    <div class="impact-row">
+      <div class="impact-cell reveal"><span class="impact-num"><span class="counter" data-target="100">0</span>+</span><div class="impact-desc">Automations Delivered</div></div>
+      <div class="impact-cell reveal" style="transition-delay:.1s"><span class="impact-num"><span class="counter" data-target="500">0</span>h</span><div class="impact-desc">Client Hours Saved/Mo</div></div>
+      <div class="impact-cell reveal" style="transition-delay:.2s"><span class="impact-num"><span class="counter" data-target="90">0</span>%</span><div class="impact-desc">SDR Time Reduced</div></div>
+      <div class="impact-cell reveal" style="transition-delay:.3s"><span class="impact-num">0%</span><div class="impact-desc">CRM Error Rate</div></div>
+    </div>
+    <div class="tools-title">// FULL STACK TOOLKIT</div>
+    <div class="tools-row">
+      <span class="tool-badge">N8N</span><span class="tool-badge">Zapier</span><span class="tool-badge">Make.com</span>
+      <span class="tool-badge">Google Workspace</span><span class="tool-badge">HubSpot</span><span class="tool-badge">Go High Level</span>
+      <span class="tool-badge">Xero</span><span class="tool-badge">Notion</span><span class="tool-badge">Airtable</span>
+      <span class="tool-badge">Slack</span><span class="tool-badge">ChatGPT</span><span class="tool-badge">OpenAI API</span>
+      <span class="tool-badge">Gemini AI</span><span class="tool-badge">Supabase</span><span class="tool-badge">Asana</span>
+      <span class="tool-badge">Shopify</span><span class="tool-badge">Systeme.io</span><span class="tool-badge">ActiveCampaign</span>
+      <span class="tool-badge">Stripe</span><span class="tool-badge">WooCommerce</span><span class="tool-badge">Microsoft Copilot</span>
+      <span class="tool-badge">Google Sheets</span><span class="tool-badge">Monday.com</span><span class="tool-badge">Trello</span>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- TRUST -->
+<section id="trust">
+  <div class="section-wrap">
+    <div class="section-tag">SOCIAL PROOF</div>
+    <h2 class="section-title">CLIENT <span style="color:var(--accent)">FEEDBACK</span></h2>
+    <div class="trust-strip">
+      <div class="trust-card chamfer reveal">
+        <div class="trust-stars">★★★★★</div>
+        <p class="trust-quote">Jowie built our entire outbound SDR system in N8N. Leads are now qualified, booked, and logged in our CRM without anyone lifting a finger. Absolutely elite work.</p>
+        <div class="trust-author">Sales Director</div>
+        <div class="trust-role">B2B SaaS Company</div>
+      </div>
+      <div class="trust-card chamfer reveal" style="transition-delay:.15s">
+        <div class="trust-stars">★★★★★</div>
+        <p class="trust-quote">We were spending 10+ hours weekly syncing Systeme.io and GHL. Now it's zero. Jowie's CRM Bridge is flawless — no errors, no duplicates, instant updates.</p>
+        <div class="trust-author">Agency Owner</div>
+        <div class="trust-role">Digital Marketing Agency</div>
+      </div>
+      <div class="trust-card chamfer reveal" style="transition-delay:.3s">
+        <div class="trust-stars">★★★★★</div>
+        <p class="trust-quote">The RAG agent Jowie built knows our entire product documentation. Our support team went from 50 tickets/day to under 10. This is the future of operations.</p>
+        <div class="trust-author">Head of Operations</div>
+        <div class="trust-role">E-Commerce Brand</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="section-tag">CONTACT</div>
+    <h2 class="section-title">GET IN <span style="color:var(--accent)">TOUCH</span></h2>
+    <div class="contact-grid">
+      <div class="contact-info reveal-left">
+        <p style="font-size:.84rem;color:var(--muted-fg);line-height:1.9;margin-bottom:1.5rem">Ready to automate your operations, integrate AI into your workflows, or build a system that saves your team <strong style="color:var(--fg)">hundreds of hours monthly</strong>? Let's connect.</p>
+        <a href="tel:09394911140" class="contact-item chamfer">
+          <div class="contact-item-icon">📞</div>
+          <div><div class="contact-item-label">Phone / WhatsApp</div><div class="contact-item-value">09394911140</div></div>
+        </a>
+        <a href="mailto:jowieflores.freelancer@gmail.com" class="contact-item chamfer">
+          <div class="contact-item-icon">✉</div>
+          <div><div class="contact-item-label">Email</div><div class="contact-item-value">jowieflores.freelancer@gmail.com</div></div>
+        </a>
+        <a href="#letstalk" class="contact-item chamfer">
+          <div class="contact-item-icon">📅</div>
+          <div><div class="contact-item-label">Schedule a Free 30-Min Call</div><div class="contact-item-value">Book via Calendly →</div></div>
+        </a>
+        <div style="margin-top:1.5rem;border:1px solid var(--border);background:var(--card);padding:1rem;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--muted-fg)">
+          <div style="color:var(--accent3);margin-bottom:.5rem">// RESPONSE TIME</div>
+          <div><span style="color:var(--accent)">$</span> avg_response --email → <span style="color:var(--fg)">Within 24 hours</span></div>
+          <br>
+          <div><span style="color:var(--accent)">$</span> avg_response --calendly → <span style="color:var(--fg)">Same-day slots available</span></div>
+        </div>
+      </div>
+      <div class="contact-form reveal-right">
+        <div class="form-group">
+          <label class="form-label">// Your Name</label>
+          <div class="input-wrap"><input type="text" id="cf-name" class="form-input chamfer-sm" placeholder="your_name"/></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">// Email Address</label>
+          <div class="input-wrap"><input type="email" id="cf-email" class="form-input chamfer-sm" placeholder="your@email.com"/></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">// What Do You Need Automated?</label>
+          <div class="input-wrap input-wrap-ta"><textarea id="cf-msg" class="form-input chamfer-sm" placeholder="describe_your_project..."></textarea></div>
+        </div>
+        <button class="btn btn-primary chamfer-sm" style="width:100%;justify-content:center" onclick="handleContactForm()">⚡ TRANSMIT MESSAGE</button>
+        <div id="form-feedback" style="display:none;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--accent);text-align:center;padding:.75rem;border:1px solid var(--accent);box-shadow:var(--glow);margin-top:.5rem"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cyber-divider"></div>
+
+<!-- LET'S TALK -->
+<section id="letstalk">
+  <div class="section-wrap">
+    <div class="section-tag">LET'S TALK</div>
+    <h2 class="section-title">BOOK A FREE <span style="color:var(--accent)">SESSION</span></h2>
+    <p style="font-size:.84rem;color:var(--muted-fg);max-width:560px;line-height:1.9;margin-bottom:.75rem">
+      30 minutes. No pitch. Just a focused conversation about your automation needs and how I can <strong style="color:var(--fg)">save your team 10+ hours a week</strong>.
+    </p>
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:2rem;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--muted-fg)">
+      <span><span style="color:var(--accent)">✓</span> Free consultation</span>
+      <span><span style="color:var(--accent)">✓</span> No commitment</span>
+      <span><span style="color:var(--accent)">✓</span> Same-day slots available</span>
+    </div>
+    <div class="calendly-wrap chamfer">
+      <div class="calendly-inline-widget" data-url="https://calendly.com/jowieflores-freelancer/30min" style="min-width:320px;height:700px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">JOF.EXE</div>
+    <div class="footer-copy">© 2025 Jowie Orlina Flores // All Systems Operational</div>
+    <div class="footer-links">
+      <a href="#about">About</a>
+      <a href="#workflows">Work</a>
+      <a href="#trust">Reviews</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Custom cursor */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  setTimeout(()=>{ring.style.left=mx+'px'; ring.style.top=my+'px';},60);
+});
+document.querySelectorAll('a,button,.flow-node,.project-card,.why-card,.tool-badge,.expertise-card,.contact-item,.float-tag').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='20px';cur.style.height='20px';cur.style.opacity='.6';ring.style.width='48px';ring.style.height='48px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='12px';cur.style.height='12px';cur.style.opacity='1';ring.style.width='32px';ring.style.height='32px'});
+});
+
+/* Progress bar */
+const pb = document.getElementById('progress-bar');
+window.addEventListener('scroll',()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  pb.style.width=pct+'%';
+},{passive:true});
+
+/* Nav */
+function toggleNav(){ document.getElementById('navLinks').classList.toggle('open'); }
+function closeNav(){ document.getElementById('navLinks').classList.remove('open'); }
+
+/* Active nav */
+const allSections = document.querySelectorAll('section[id]');
+const allNavLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let current='';
+  allSections.forEach(s=>{ if(window.scrollY>=s.offsetTop-100) current=s.id; });
+  allNavLinks.forEach(a=>{ a.classList.remove('active'); if(a.getAttribute('href')==='#'+current) a.classList.add('active'); });
+},{passive:true});
+
+/* Typewriter */
+const phrases=['AI Workflow Architect','N8N Automation Expert','CRM Integration Specialist','Data Analyst & Web Developer','RAG AI Systems Builder'];
+let pi=0,ci=0,deleting=false;
+const tw=document.getElementById('typewriter');
+function type(){
+  const phrase=phrases[pi];
+  if(!deleting){ tw.textContent=phrase.slice(0,++ci); if(ci===phrase.length){ deleting=true; setTimeout(type,1800); return; } }
+  else{ tw.textContent=phrase.slice(0,--ci); if(ci===0){ deleting=false; pi=(pi+1)%phrases.length; } }
+  setTimeout(type,deleting?40:80);
+}
+type();
+
+/* Scroll reveal */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.12});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>ro.observe(el));
+
+/* Counters */
+function animateCounter(el){
+  const target=parseInt(el.dataset.target);
+  const suffix=el.dataset.suffix||'';
+  const dur=1800; const start=performance.now();
+  function upd(now){ const p=Math.min((now-start)/dur,1); const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(ease*target)+(p>=1?suffix:'');
+    if(p<1) requestAnimationFrame(upd); }
+  requestAnimationFrame(upd);
+}
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting&&!e.target.dataset.done){ e.target.dataset.done='1'; animateCounter(e.target); } });
+},{threshold:.3});
+document.querySelectorAll('.counter').forEach(el=>cObs.observe(el));
+
+/* Skill bars */
+const sbObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.skill-bar-fill').forEach(fill=>{
+        if(!fill.dataset.done){ fill.dataset.done='1'; fill.style.width=fill.dataset.width; }
+      });
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('.skill-bars').forEach(el=>sbObs.observe(el));
+
+/* Flow diagram */
+const nodeDetails=[
+  '▶ Stage 1: EMAIL TRIGGER — Prospect reply detected in Instantly.ai · Webhook fires · N8N workflow begins',
+  '🧠 Stage 2: AI PROCESSING — GPT-4 reads email · Scores intent 1–10 · Extracts meeting signals · Classifies lead temperature',
+  '🔀 Stage 3: SMART ROUTING — Hot (8-10): calendar link sent · Warm (5-7): follow-up sequence · Cold (1-4): long-term nurture drip',
+  '📊 Stage 4: CRM UPDATE — Contact tagged in HubSpot/GHL · Deal stage advanced · AI-written notes logged · Duplicate check run',
+  '📤 Stage 5: SLACK NOTIFICATION — Sales rep alerted with: lead name, score, intent summary + recommended talking points',
+  '✅ Stage 6: COMPLETE — Meeting booked · Calendar invite sent · Confirmation email dispatched · Zero human input required'
+];
+let autoIdx=0,autoPaused=false;
+function selectNode(i){
+  autoPaused=true;
+  setTimeout(()=>autoPaused=false,6000);
+  document.querySelectorAll('.flow-node').forEach((n,idx)=>n.classList.toggle('active-node',idx===i));
+  document.getElementById('node-detail').textContent=nodeDetails[i];
+}
+setInterval(()=>{ if(!autoPaused){ autoIdx=(autoIdx+1)%6; selectNode(autoIdx); } },2600);
+
+/* Contact form */
+function handleContactForm(){
+  const name=document.getElementById('cf-name').value.trim();
+  const email=document.getElementById('cf-email').value.trim();
+  const fb=document.getElementById('form-feedback');
+  fb.style.display='block';
+  if(!name||!email){
+    fb.style.color='var(--destructive)';fb.style.borderColor='var(--destructive)';fb.style.boxShadow='0 0 8px #ff3366';
+    fb.textContent='// ERROR :: NAME AND EMAIL FIELDS ARE REQUIRED';
+    setTimeout(()=>{fb.style.display='none';fb.style.color='var(--accent)';fb.style.borderColor='var(--accent)';fb.style.boxShadow='var(--glow)';},3500);
+    return;
+  }
+  fb.style.color='var(--accent)';fb.style.borderColor='var(--accent)';fb.style.boxShadow='var(--glow)';
+  fb.textContent='// TRANSMISSION SUCCESSFUL :: JOF.EXE WILL RESPOND WITHIN 24H';
+  setTimeout(()=>{fb.style.display='none';},5000);
+}
+</script>
+</body>
+</html>
