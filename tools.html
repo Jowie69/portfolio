@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOF.EXE — Freelance Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0: #060a10;
+  --bg1: #0a1020;
+  --bg2: #0e1628;
+  --bg3: #131e32;
+  --bg4: #18263e;
+  --border: #1a2840;
+  --border2: #20304e;
+  --blue: #3b82f6;
+  --blue2: #60a5fa;
+  --blue3: #93c5fd;
+  --glow: rgba(59,130,246,0.12);
+  --teal: #14b8a6;
+  --green: #22c55e;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #a78bfa;
+  --pink: #f472b6;
+  --text0: #f0f4ff;
+  --text1: #c2d0ee;
+  --text2: #6e82ac;
+  --text3: #3f506e;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Syne', sans-serif;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --sidebar-w: 220px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg0);
+  color: var(--text1);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* scanlines */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--bg1);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 10;
+}
+#sidebar::-webkit-scrollbar { width: 3px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border2); }
+
+.sidebar-logo {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.logo-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--blue);
+  background: var(--glow);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: inline-block;
+  margin-bottom: 5px;
+  letter-spacing: .06em;
+}
+.sidebar-logo h1 {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text0);
+  letter-spacing: -0.5px;
+}
+.sidebar-logo p { font-size: 9px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
+
+.sidebar-status {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--green);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.pulse { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── BACKUP BAR ── */
+.backup-bar {
+  padding: 8px 14px;
+  background: var(--bg0);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.backup-bar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.backup-bar-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.backup-bar-btns {
+  display: flex;
+  gap: 5px;
+}
+.backup-ts {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.backup-ts-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--amber);
+  flex-shrink: 0;
+}
+.backup-ts-dot.safe { background: var(--teal); }
+
+nav { flex: 1; padding: 10px 0; }
+.nav-section-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: .14em;
+  padding: 10px 16px 3px;
+  text-transform: uppercase;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all .12s;
+  border-left: 2px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text1); }
+.nav-item.active { background: var(--glow); color: var(--blue2); border-left-color: var(--blue); }
+.nav-item .icon { font-size: 13px; width: 18px; text-align: center; }
+.nav-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 8px;
+  background: var(--blue);
+  color: white;
+  border-radius: 20px;
+  padding: 1px 6px;
+}
+
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+.sidebar-footer span { color: var(--blue); }
+
+/* ── MAIN ── */
+#main {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg0);
+  position: relative;
+}
+#main::-webkit-scrollbar { width: 4px; }
+#main::-webkit-scrollbar-track { background: var(--bg1); }
+#main::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+#main::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+.page { display: none; padding: 24px 28px 40px; animation: fadeIn .18s ease; min-width: 0; }
+.page.active { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.page-header-left h2 {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text0);
+  letter-spacing: -0.5px;
+}
+.page-header-left p { font-size: 12px; color: var(--text2); margin-top: 3px; font-family: var(--mono); }
+
+.page-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.tag-blue { color: var(--blue2); border-color: rgba(59,130,246,.35); background: rgba(59,130,246,.08); }
+.tag-green { color: var(--green); border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08); }
+.tag-amber { color: var(--amber); border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08); }
+.tag-purple { color: var(--purple); border-color: rgba(167,139,250,.35); background: rgba(167,139,250,.08); }
+.tag-teal { color: var(--teal); border-color: rgba(20,184,166,.35); background: rgba(20,184,166,.08); }
+.tag-pink { color: var(--pink); border-color: rgba(244,114,182,.35); background: rgba(244,114,182,.08); }
+
+/* ── GRID ── */
+.grid { display: grid; gap: 14px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: 1fr 1fr 1fr; }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ── CARD ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+.card-sm { padding: 13px 15px; }
+.card-accent { border-color: rgba(59,130,246,.35); background: linear-gradient(135deg, var(--bg2), var(--bg3)); }
+
+/* ── STAT CARD ── */
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.stat-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent-color, var(--blue));
+}
+.stat-card .stat-icon { font-size: 18px; margin-bottom: 8px; }
+.stat-card .stat-val { font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--text0); line-height: 1; }
+.stat-card .stat-lbl { font-size: 10px; color: var(--text3); font-family: var(--mono); margin-top: 3px; }
+.stat-card .stat-sub { font-size: 10px; color: var(--text2); margin-top: 6px; }
+
+/* ── CURRENCY TOGGLE ── */
+.currency-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 3px;
+}
+.currency-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all .15s;
+  background: transparent;
+  color: var(--text2);
+  font-weight: 700;
+}
+.currency-btn.active { background: var(--blue); color: white; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all .14s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: var(--blue2); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(59,130,246,.35); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text0); border-color: var(--blue); background: var(--glow); }
+.btn-teal { background: var(--teal); color: white; }
+.btn-teal:hover { opacity: .85; transform: translateY(-1px); }
+.btn-amber { background: var(--amber); color: #1a1000; }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+.btn-xs { padding: 3px 9px; font-size: 10px; }
+
+/* ── FORMS ── */
+.form-group { margin-bottom: 13px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+input, textarea, select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text0);
+  font-family: var(--sans);
+  font-size: 12px;
+  padding: 8px 11px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  -webkit-appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(59,130,246,.1);
+}
+textarea { resize: vertical; min-height: 72px; line-height: 1.6; }
+select option { background: var(--bg3); }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--blue);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Q&A ── */
+.qa-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.qa-item:hover { border-color: var(--border2); }
+.qa-item.open { border-color: rgba(59,130,246,.3); }
+.qa-q {
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg2);
+  transition: background .12s;
+  user-select: none;
+}
+.qa-q:hover { background: var(--bg3); }
+.qa-item.open .qa-q { background: var(--bg3); border-bottom: 1px solid var(--border); }
+.qa-q-text { font-size: 12px; font-weight: 600; color: var(--text0); }
+.qa-q-tag { font-family: var(--mono); font-size: 8px; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; }
+.qa-arrow { color: var(--text3); font-size: 10px; transition: transform .2s; flex-shrink: 0; }
+.qa-item.open .qa-arrow { transform: rotate(180deg); color: var(--blue2); }
+.qa-body {
+  display: none;
+  padding: 14px;
+  background: var(--bg1);
+  animation: fadeIn .15s ease;
+}
+.qa-item.open .qa-body { display: block; }
+.qa-answer {
+  font-size: 12px;
+  color: var(--text1);
+  line-height: 1.85;
+  margin-bottom: 10px;
+  border-left: 2px solid var(--blue);
+  padding-left: 12px;
+}
+.qa-answer strong { color: var(--blue2); font-weight: 700; }
+.qa-tip {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: rgba(20,184,166,.07);
+  border: 1px solid rgba(20,184,166,.18);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  line-height: 1.7;
+}
+.qa-redflag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--amber);
+  background: rgba(245,158,11,.07);
+  border: 1px solid rgba(245,158,11,.18);
+  border-radius: var(--radius);
+  padding: 9px 12px;
+  line-height: 1.7;
+  margin-top: 8px;
+}
+
+/* ── BUILDER LAYOUT ── */
+.builder-layout { display: grid; grid-template-columns: 340px 1fr; gap: 18px; align-items: flex-start; }
+.builder-form { display: flex; flex-direction: column; gap: 12px; }
+
+.preview-area {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  font-family: Georgia, serif;
+  color: #1a1a2e;
+  background: #fafbff;
+  min-height: 500px;
+  overflow-y: auto;
+  max-height: calc(100vh - 160px);
+  position: sticky;
+  top: 0;
+}
+.preview-area::-webkit-scrollbar { width: 3px; }
+.preview-area::-webkit-scrollbar-thumb { background: #c5d0e8; }
+.preview-area h1 { font-size: 20px; font-weight: 700; color: #0d1422; border-bottom: 3px solid #3b82f6; padding-bottom: 7px; margin-bottom: 14px; }
+.preview-area h2 { font-size: 13px; font-weight: 700; color: #3b82f6; margin: 18px 0 7px; text-transform: uppercase; letter-spacing: .06em; font-family: 'Space Mono', monospace; }
+.preview-area h3 { font-size: 12px; font-weight: 700; color: #0d1422; margin: 12px 0 5px; }
+.preview-area p { font-size: 12px; line-height: 1.75; color: #374151; margin-bottom: 7px; }
+.preview-area .meta-grid { display: grid; grid-template-columns: 120px 1fr; gap: 0; border: 1px solid #d1d5db; border-radius: 6px; overflow: hidden; margin-bottom: 14px; }
+.preview-area .meta-label { font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700; color: #3b82f6; background: #e6f1fb; padding: 6px 9px; border-bottom: 1px solid #d1d5db; }
+.preview-area .meta-val { font-size: 11px; color: #1a1a2e; padding: 6px 9px; border-bottom: 1px solid #d1d5db; }
+.preview-area .meta-label:last-of-type, .preview-area .meta-val:last-child { border-bottom: none; }
+.preview-area ul { margin: 0 0 9px 16px; }
+.preview-area li { font-size: 12px; color: #374151; line-height: 1.75; margin-bottom: 2px; }
+.preview-area .section-banner { background: #0d1422; color: white; padding: 6px 12px; border-radius: 5px; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; margin: 16px 0 10px; letter-spacing: .06em; }
+.preview-area .deliv-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 10px; }
+.preview-area .deliv-table th { background: #0d1422; color: white; padding: 6px 9px; text-align: left; font-family: 'Space Mono', monospace; font-size: 9px; }
+.preview-area .deliv-table td { padding: 6px 9px; border-bottom: 1px solid #e5e7eb; color: #374151; }
+.preview-area .deliv-table tr:nth-child(even) td { background: #f8fafc; }
+.preview-area .price-total { display: flex; justify-content: space-between; background: #0d1422; color: white; padding: 10px 14px; border-radius: 6px; margin-top: 10px; }
+.preview-area .price-total span:last-child { font-family: 'Space Mono', monospace; font-size: 16px; font-weight: 700; color: #60a5fa; }
+.preview-area .inc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
+.preview-area .inc-box { border: 1px solid #d1d5db; border-radius: 5px; padding: 9px 11px; }
+.preview-area .inc-box h4 { font-size: 10px; font-weight: 700; margin-bottom: 5px; font-family: 'Space Mono', monospace; }
+.preview-area .inc-box.yes h4 { color: #0f6e56; }
+.preview-area .inc-box.no h4 { color: #92400e; }
+.preview-area .sig-line { border-top: 1px solid #374151; margin-top: 28px; padding-top: 7px; font-size: 10px; color: #6b7280; font-family: 'Space Mono', monospace; }
+.preview-area .highlight-box { background: #e6f1fb; border-left: 3px solid #3b82f6; padding: 9px 12px; border-radius: 0 5px 5px 0; margin-bottom: 10px; font-size: 12px; color: #0d1422; }
+.preview-area .contract-clause { margin-bottom: 14px; }
+.preview-area .contract-clause h3 { font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; color: #185FA5; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+.preview-area .contract-clause p { font-size: 11px; line-height: 1.8; }
+
+/* ── RATE CALC ── */
+.rate-result {
+  background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(20,184,166,.04));
+  border: 1px solid rgba(59,130,246,.25);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  margin-top: 16px;
+}
+.rate-result .rate-label { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-bottom: 5px; }
+.rate-result .rate-val { font-family: var(--mono); font-size: 38px; font-weight: 700; color: var(--blue2); }
+.rate-result .rate-range { font-size: 12px; color: var(--text2); margin-top: 5px; }
+
+/* ── KANBAN ── */
+.kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: flex-start; }
+.kanban-col {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  min-height: 200px;
+  transition: border-color .15s;
+}
+.kanban-col.drag-over {
+  border-color: var(--blue);
+  background: rgba(59,130,246,.06);
+}
+.kanban-col-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.kanban-col-title { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.kanban-count { font-family: var(--mono); font-size: 9px; background: var(--bg4); padding: 2px 6px; border-radius: 20px; color: var(--text3); }
+.kanban-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 7px;
+  cursor: grab;
+  transition: all .15s;
+  user-select: none;
+}
+.kanban-card:hover { border-color: var(--blue); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.3); }
+.kanban-card.dragging {
+  opacity: .5;
+  cursor: grabbing;
+  transform: rotate(2deg) scale(1.02);
+}
+.kanban-card .kc-name { font-size: 12px; font-weight: 600; color: var(--text0); margin-bottom: 3px; }
+.kanban-card .kc-project { font-size: 10px; color: var(--text2); font-family: var(--mono); }
+.kanban-card .kc-budget { font-family: var(--mono); font-size: 10px; color: var(--green); margin-top: 6px; }
+.kanban-card .kc-actions { margin-top: 7px; display: flex; gap: 5px; }
+.kanban-card .kc-notes { font-size: 10px; color: var(--text3); margin-top: 3px; font-style: italic; line-height: 1.4; }
+
+/* ── TEMPLATE GRID ── */
+.template-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.template-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  cursor: pointer;
+  transition: all .18s;
+  position: relative;
+  overflow: hidden;
+}
+.template-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--tc-color, var(--blue));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .18s;
+}
+.template-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+.template-card:hover::before { transform: scaleX(1); }
+.tc-icon { font-size: 22px; margin-bottom: 8px; }
+.tc-title { font-size: 13px; font-weight: 700; color: var(--text0); margin-bottom: 3px; }
+.tc-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.tc-copy-btn { margin-top: 10px; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(6,10,16,.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: overlayIn .18s ease;
+}
+@keyframes overlayIn { from{opacity:0} to{opacity:1} }
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalIn .18s ease;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+}
+@keyframes modalIn { from{opacity:0;transform:scale(.96) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal::-webkit-scrollbar { width: 3px; }
+.modal::-webkit-scrollbar-thumb { background: var(--border2); }
+.modal h3 { font-family: var(--mono); font-size: 14px; color: var(--text0); margin-bottom: 5px; }
+.modal > p { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
+.modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 26px; height: 26px;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--text2);
+  transition: all .15s;
+  z-index: 1;
+}
+.modal-close:hover { color: var(--text0); background: var(--red); border-color: var(--red); }
+.modal textarea { min-height: 180px; font-family: var(--mono); font-size: 11px; white-space: pre; }
+
+/* ── ALERTS ── */
+.alert {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  margin-bottom: 14px;
+  border: 1px solid;
+  font-family: var(--mono);
+}
+.alert-blue { background: rgba(59,130,246,.07); border-color: rgba(59,130,246,.22); color: var(--blue3); }
+.alert-green { background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.22); color: var(--green); }
+.alert-amber { background: rgba(245,158,11,.07); border-color: rgba(245,158,11,.22); color: var(--amber); }
+
+/* ── INCOME TRACKER ── */
+.income-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 110px 80px 70px;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 13px;
+  border-radius: var(--radius);
+  margin-bottom: 5px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  transition: border-color .12s;
+}
+.income-row:not(.header):hover { border-color: var(--border2); }
+.income-row.header {
+  background: transparent;
+  border: none;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding-bottom: 4px;
+  margin-bottom: 2px;
+}
+.income-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  text-align: center;
+  white-space: nowrap;
+}
+.status-paid { background: rgba(34,197,94,.1); color: var(--green); border: 1px solid rgba(34,197,94,.25); }
+.status-pending { background: rgba(245,158,11,.1); color: var(--amber); border: 1px solid rgba(245,158,11,.25); }
+.status-overdue { background: rgba(239,68,68,.1); color: var(--red); border: 1px solid rgba(239,68,68,.25); }
+.income-total-bar {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin-bottom: 18px;
+}
+.it-item { text-align: center; padding: 0 12px; }
+.it-item:not(:last-child) { border-right: 1px solid var(--border); }
+.it-val { font-family: var(--mono); font-size: 18px; font-weight: 700; }
+.it-lbl { font-family: var(--mono); font-size: 9px; color: var(--text3); margin-top: 2px; }
+
+/* ── CHECKLIST ── */
+.checklist-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+/* ── PRINT ── */
+#pg-print-proposal, #pg-print-contract { display: none; }
+@media print {
+  body::before { display: none !important; }
+  #sidebar { display: none !important; }
+  #main { overflow: visible !important; }
+  .page { display: none !important; padding: 0 !important; }
+  .page-header { display: none !important; }
+  .btn { display: none !important; }
+  body.printing-proposal #pg-print-proposal { display: block !important; }
+  body.printing-contract #pg-print-contract { display: block !important; }
+  #pg-print-proposal .preview-area, #pg-print-contract .preview-area {
+    border: none !important; box-shadow: none !important;
+    max-height: none !important; min-height: auto !important;
+    padding: 0 !important; overflow: visible !important;
+  }
+}
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  z-index: 99999;
+  transform: translateY(50px);
+  opacity: 0;
+  transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(34,197,94,.2);
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── DRAG PLACEHOLDER ── */
+.drag-placeholder {
+  border: 2px dashed var(--blue);
+  border-radius: var(--radius);
+  height: 60px;
+  background: rgba(59,130,246,.05);
+  margin-bottom: 7px;
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<div id="pg-print-proposal"><div class="preview-area" id="proposal-preview-print"></div></div>
+<div id="pg-print-contract"><div class="preview-area" id="contract-preview-print"></div></div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">v2.2 // ONLINE</div>
+    <h1>JOF.EXE</h1>
+    <p>Freelance Command Center</p>
+  </div>
+  <div class="sidebar-status">
+    <div class="pulse"></div>
+    JOWIE FLORES // AVAILABLE
+  </div>
+
+  <!-- ══ BACKUP BAR ══ -->
+  <div class="backup-bar">
+    <div class="backup-bar-top">
+      <div class="backup-bar-label">💾 DATA BACKUP</div>
+      <div class="backup-bar-btns">
+        <button class="btn btn-xs" style="background:rgba(20,184,166,.13);color:var(--teal);border:1px solid rgba(20,184,166,.3);" onclick="exportBackup()" title="Download all your data as a JSON file">Export ↓</button>
+        <button class="btn btn-xs" style="background:rgba(167,139,250,.13);color:var(--purple);border:1px solid rgba(167,139,250,.3);" onclick="triggerImport()" title="Restore from a backup JSON file">Import ↑</button>
+        <input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="importBackup(event)">
+      </div>
+    </div>
+    <div class="backup-ts" id="backup-ts-row">
+      <div class="backup-ts-dot" id="backup-ts-dot"></div>
+      <span id="backup-ts-text" style="font-family:var(--mono);font-size:8px;color:var(--text3);">Never backed up</span>
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-section-label">Main</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="icon">⚡</span> Dashboard</div>
+    <div class="nav-item" onclick="showPage('interview',this)"><span class="icon">🎯</span> Interview Scripts</div>
+    <div class="nav-section-label">Templates</div>
+    <div class="nav-item" onclick="showPage('proposal',this)"><span class="icon">📋</span> Proposal Builder</div>
+    <div class="nav-item" onclick="showPage('contract',this)"><span class="icon">📜</span> Contract Generator</div>
+    <div class="nav-item" onclick="showPage('templates',this)"><span class="icon">🗂️</span> Message Templates</div>
+    <div class="nav-section-label">Tools</div>
+    <div class="nav-item" onclick="showPage('calculator',this)"><span class="icon">💰</span> Rate Calculator</div>
+    <div class="nav-item" onclick="showPage('tracker',this)"><span class="icon">📊</span> Client Tracker</div>
+    <div class="nav-item" onclick="showPage('income',this)"><span class="icon">💵</span> Income Tracker</div>
+    <div class="nav-item" onclick="showPage('checklist',this)"><span class="icon">✅</span> Project Checklist</div>
+  </nav>
+  <div class="sidebar-footer">Jowie O. Flores<br><span>AI Automation Specialist</span><br>Naga, Bicol PH</div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- ══ DASHBOARD ══ -->
+<div class="page active" id="dashboard">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// DASHBOARD</h2>
+      <p>Your freelance command center — everything in one place</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="currency-toggle">
+        <button class="currency-btn active" onclick="setCurrency('USD',this)">USD</button>
+        <button class="currency-btn" onclick="setCurrency('PHP',this)">PHP</button>
+      </div>
+      <span class="page-tag tag-green">SYSTEM ONLINE</span>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:18px;">
+    <div class="stat-card" style="--accent-color:var(--blue)">
+      <div class="stat-icon">🤖</div>
+      <div class="stat-val">10+</div>
+      <div class="stat-lbl">Workflows Built</div>
+      <div class="stat-sub">n8n · Make · Zapier</div>
+    </div>
+    <div class="stat-card" style="--accent-color:var(--green)">
+      <div class="stat-icon">⏱️</div>
+      <div class="stat-val">500+</div>
+      <div class="stat-lbl">hrs Saved / Month</div>
+      <div class="stat-sub">Across active systems</div>
+    </div>
+    <div class="stat-card" style="--accent-color:var(--teal)">
+      <div class="stat-icon">💵</div>
+      <div class="stat-val" id="dash-earned">₱0</div>
+      <div class="stat-lbl">Earned This Month</div>
+      <div class="stat-sub">From Income Tracker</div>
+    </div>
+    <div class="stat-card" style="--accent-color:var(--amber)">
+      <div class="stat-icon">🎓</div>
+      <div class="stat-val">15%</div>
+      <div class="stat-lbl">TVA Course Done</div>
+      <div class="stat-sub">Keep grinding, Kuya!</div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:16px;">
+    <div class="card card-accent">
+      <div class="section-label">Quick Actions</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;">
+        <button class="btn btn-primary btn-sm" onclick="showPage('proposal',document.querySelector('[onclick*=proposal]'))">📋 New Proposal</button>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('contract',document.querySelector('[onclick*=contract]'))">📜 New Contract</button>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('calculator',document.querySelector('[onclick*=calculator]'))">💰 Price Project</button>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('tracker',document.querySelector('[onclick*=tracker]'))">📊 Add Client</button>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('income',document.querySelector('[onclick*=income]'))">💵 Log Income</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportBackup()" style="color:var(--teal);border-color:rgba(20,184,166,.3)">💾 Backup Data</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label">Your Stack</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;">
+        <span class="page-tag tag-blue">n8n</span>
+        <span class="page-tag tag-teal">Make.com</span>
+        <span class="page-tag tag-purple">Zapier</span>
+        <span class="page-tag tag-green">OpenAI</span>
+        <span class="page-tag tag-amber">HubSpot</span>
+        <span class="page-tag tag-pink">GoHighLevel</span>
+        <span class="page-tag tag-blue">Supabase</span>
+        <span class="page-tag tag-teal">RAG Systems</span>
+        <span class="page-tag tag-green">Airtable</span>
+        <span class="page-tag tag-purple">LangChain</span>
+        <span class="page-tag tag-blue">React</span>
+        <span class="page-tag tag-amber">Node.js</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div class="section-label">Pipeline Overview</div>
+    <div class="grid g4" style="gap:8px;">
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text0)" id="dp-lead">0</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:3px;">Leads</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--blue2)" id="dp-proposal">0</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:3px;">Proposals Sent</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--amber)" id="dp-progress">0</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:3px;">In Progress</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:10px;text-align:center">
+        <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--green)" id="dp-done">0</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:3px;">Paid / Done</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">This Week's Game Plan</div>
+    <div class="grid g3" style="gap:10px;">
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:12px;border-left:2px solid var(--blue)">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--blue);margin-bottom:5px;">DAILY HABIT</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text0);margin-bottom:3px;">10 LinkedIn Outreaches</div>
+        <div style="font-size:11px;color:var(--text2);">Target: Ops Managers, Agency Owners in US/AU/UK. Use scripts in Interview tab.</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:12px;border-left:2px solid var(--teal)">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--teal);margin-bottom:5px;">THIS WEEK</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text0);margin-bottom:3px;">Fix Upwork Profile</div>
+        <div style="font-size:11px;color:var(--text2);">New title: "AI Automation Specialist — n8n · Make · Zapier | Save 10+ hrs/week"</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:12px;border-left:2px solid var(--amber)">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--amber);margin-bottom:5px;">CONTENT</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text0);margin-bottom:3px;">Post 2 Workflow Videos</div>
+        <div style="font-size:11px;color:var(--text2);">Before/after format. Show the ROI. LinkedIn + Facebook. Tag Kuya RJ's community.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ INTERVIEW SCRIPTS ══ -->
+<div class="page" id="interview">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// INTERVIEW SCRIPTS</h2>
+      <p>Every question, every answer, every closing move — memorize these</p>
+    </div>
+    <span class="page-tag tag-blue">CLICK TO EXPAND</span>
+  </div>
+  <div style="display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap;" id="qa-filters">
+    <button class="btn btn-primary btn-sm" onclick="filterQA('all',this)">All</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterQA('intro',this)">Intro</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterQA('technical',this)">Technical</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterQA('client',this)">Ask Client</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterQA('rate',this)">Rates</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterQA('objection',this)">Objections</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterQA('close',this)">Closing</button>
+  </div>
+  <div id="qa-list">
+    <div class="qa-item" data-cat="intro">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"Tell me about yourself."</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-blue">intro</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"I'm Jowie Flores, an AI automation specialist based in Naga, Bicol. I build intelligent workflow systems using n8n, Make.com, and Zapier — integrated with AI tools like OpenAI and Gemini — that eliminate manual work and drive measurable ROI. I've built 10+ production systems covering lead qualification, CRM automation, AI agents, and content pipelines. <strong>My goal with every client is simple: you give me your most painful manual process, I automate it, and we both measure the results.</strong>"</p><div class="qa-tip"><strong>⚡ TIP:</strong> 60 seconds max. End on the value you deliver. Eye contact on camera. Practice until it's natural, not recited.</div></div>
+    </div>
+    <div class="qa-item" data-cat="intro">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"What makes you different from other automation freelancers?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-blue">intro</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"Most automation freelancers connect apps. I engineer systems that <strong>think, qualify, route, and act</strong> — by integrating AI agents directly into workflows. I also build RAG systems that train AI on a client's own data so it knows their business inside out. And every workflow I deliver comes with full documentation, video walkthroughs, and error handling built-in — so clients are never dependent on me to manage their own systems."</p><div class="qa-tip"><strong>⚡ TIP:</strong> Lead with AI agents + RAG — that combination is rare and premium. Mention documentation to kill the "what if you disappear" fear.</div></div>
+    </div>
+    <div class="qa-item" data-cat="intro">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"How long have you been doing this? / Are you experienced?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-blue">intro</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"I've been building automation and web systems for [X time], and I'm currently doing advanced AI automation training with n8n's ambassador in the Philippines. More importantly — my portfolio at freelancer-jowie.onrender.com has 10 production-grade workflows you can see right now. <strong>I'm not learning on your project. I've already built this type of system.</strong>"</p><div class="qa-tip"><strong>⚡ TIP:</strong> If you're new, pivot fast to your portfolio. Clients care about results, not years. Your built work is your proof.</div></div>
+    </div>
+    <div class="qa-item" data-cat="intro">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"Why should I hire you over a full-time employee or an agency?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-blue">intro</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"A full-time automation specialist in the US runs $60k–90k/year plus benefits. An agency adds layers of overhead and account managers between you and the actual builder. I give you <strong>senior-level AI automation expertise at a fraction of that cost, with direct communication, faster turnaround, and no overhead.</strong> You pay for results, not a seat."</p><div class="qa-tip"><strong>⚡ TIP:</strong> Know US salary benchmarks. $60–90k/year = $5–7.5k/month. Your $1,500 project is a 90% discount.</div></div>
+    </div>
+    <div class="qa-item" data-cat="technical">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"n8n vs Make vs Zapier — which do you recommend?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-teal">technical</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"<strong>Zapier</strong> — easiest to use, great for simple flows, but expensive at scale. <strong>Make.com</strong> — visual, powerful, great mid-level choice. <strong>n8n</strong> — my top recommendation. Self-hostable so you own your data, full JavaScript access, native AI agent support, and costs a fraction of Zapier at scale. I use whichever fits the client's stack — but if it's a new build with AI involved, n8n wins every time."</p><div class="qa-tip"><strong>⚡ TIP:</strong> Don't trash Zapier if they use it. Suggest n8n for new AI-heavy builds, let simple existing Zapier flows stay.</div></div>
+    </div>
+    <div class="qa-item" data-cat="technical">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"Can you build AI agents? What exactly have you built?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-teal">technical</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"Yes — I build multi-step AI agents in n8n using OpenAI GPT-4 and Gemini. Specifically: an AI SDR that qualifies inbound leads and routes them to CRM, a RAG-based support agent trained on company docs using Supabase vector storage, an AI appointment setter that reads emails and books meetings, and an AI content system that repurposes one video across YouTube Shorts, LinkedIn, and Instagram. <strong>I understand both the automation layer and the AI layer — most freelancers only know one.</strong>"</p><div class="qa-tip"><strong>⚡ TIP:</strong> RAG is the hottest buzzword right now. Lead with "AI trained on YOUR data" for premium projects.</div></div>
+    </div>
+    <div class="qa-item" data-cat="technical">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"How do you handle errors and workflow failures?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-teal">technical</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"Error handling is built in as standard — not an add-on. Every workflow I ship includes: error-catching nodes, Slack/email alerts for critical failures, retry logic for transient API errors, and a logging layer to Google Sheets or Supabase. I also do 2 weeks of post-launch monitoring. <strong>My workflows fail gracefully — never silently.</strong>"</p><div class="qa-tip"><strong>⚡ TIP:</strong> This question is really about trust. Clients fear paying for something that breaks and nobody knows. Reassure with specifics.</div></div>
+    </div>
+    <div class="qa-item" data-cat="technical">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"How do you handle data security and API credentials?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-teal">technical</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"All credentials are stored in environment variables or the platform's built-in credential vault — never hardcoded. For n8n, I recommend self-hosted deployment on the client's own VPS so they retain full data ownership. I request only minimum API scopes, sign NDAs on request, and deliver a complete handover doc listing every credential and access point."</p><div class="qa-tip"><strong>⚡ TIP:</strong> Have an NDA template ready to send in 5 minutes. See Templates section.</div></div>
+    </div>
+    <div class="qa-item" data-cat="client">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">ASK CLIENT: "What's the most painful manual process in your workflow right now?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-amber">you ask this</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">This is your most powerful question. Say it, then <strong>shut up and let them talk</strong>. Don't interrupt. The more they explain their pain, the more they sell themselves. Your job right now is to listen and take visible notes — you'll mirror their exact words back in your proposal.</p><div class="qa-tip"><strong>⚡ FOLLOW UPS:</strong> "How long has this been going on?" / "How many hours per week does it cost your team?" / "What have you tried before?" / "What happens if this isn't fixed in the next 60 days?"</div></div>
+    </div>
+    <div class="qa-item" data-cat="client">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">ASK CLIENT: "What tools are you currently using? Walk me through a typical workflow."</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-amber">you ask this</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">This reveals their entire tech stack, integration complexity, and whether they have any existing automation. Map their stack on paper as they talk — you'll reference it in Section 4 of your proposal.</p><div class="qa-redflag"><strong>🚩 RED FLAGS:</strong> "We use a custom internal tool" (complex) | "We're not sure" (unclear decision-maker) | "Our IT team controls access" (long approval cycles)</div></div>
+    </div>
+    <div class="qa-item" data-cat="client">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">ASK CLIENT: "Have you budgeted for this? What range are you working with?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-amber">you ask this</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">Ask this directly. If they say "$100" for a $2,000 project, better to know now. If they push back: <strong>"I ask because I want to propose something realistic. Projects like this typically run $500–3,000 depending on scope. Does that align with your expectations?"</strong></p><div class="qa-redflag"><strong>🚩 RED FLAG:</strong> "We'll pay based on results" or "Just a small budget" = run, or take a tiny paid discovery sprint first.</div></div>
+    </div>
+    <div class="qa-item" data-cat="rate">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"Your rate is too high. Can you do it cheaper?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-pink">rate</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"I can work within a tighter budget, but I'd need to reduce scope. Let me show you two options: a lean version that solves your core bottleneck for [lower price], and the full system at my standard rate. <strong>The full version pays for itself faster</strong> — but you choose what fits right now."</p><div class="qa-tip"><strong>⚡ RULE:</strong> NEVER just cut your price. Always reduce scope when you reduce price. This protects your value.</div></div>
+    </div>
+    <div class="qa-item" data-cat="rate">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"We found someone cheaper on Fiverr."</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-pink">rate</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"That's a fair point. The reality is budget automation often breaks in production, lacks error handling, and ships with zero documentation. <strong>I've been called in to fix Fiverr automations more times than I can count.</strong> Would you want to start with a small paid discovery sprint so you can see exactly how I work before committing?"</p><div class="qa-tip"><strong>⚡ TIP:</strong> Don't badmouth Fiverr directly. Offer the discovery sprint as a low-risk entry point for skeptical clients.</div></div>
+    </div>
+    <div class="qa-item" data-cat="rate">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"What are your payment terms?"</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-pink">rate</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"For new clients: 50% deposit before I start, 50% on delivery and approval. For retainer clients after our first successful project: monthly invoice due by the 5th. I accept bank transfer, Wise, PayPal, or Upwork's payment protection. <strong>I send a contract before starting any project — this protects both of us.</strong>"</p><div class="qa-tip"><strong>⚡ RULE:</strong> ALWAYS take a deposit. It filters non-serious clients. Never start work without at least 50% paid — no exceptions.</div></div>
+    </div>
+    <div class="qa-item" data-cat="objection">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"Let me think about it."</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-purple">objection</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"Of course — this is a real investment. Quick question before you go: <strong>is there anything that's still unclear or holding you back?</strong> I'd rather address it now than send you off with an unanswered question." [Then shut up and listen. Don't fill the silence.]</p><div class="qa-tip"><strong>⚡ TIP:</strong> "Let me think about it" usually means "I have an unaddressed concern." Dig for it.</div></div>
+    </div>
+    <div class="qa-item" data-cat="objection">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">"We're not ready yet / maybe next quarter."</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-purple">objection</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"I hear you — timing matters. Quick question: what would need to happen for you to be ready? Because every month this isn't automated is costing you approximately [X hours × salary = $Y] in avoidable labor. <strong>Is there a smaller first step — a $150 discovery audit — that I could do now so you hit the ground running next quarter?</strong>"</p><div class="qa-tip"><strong>⚡ TIP:</strong> Calculate their monthly cost of the problem in real $ and say it out loud. The discovery sprint is your foot-in-the-door move.</div></div>
+    </div>
+    <div class="qa-item" data-cat="close">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">THE CLOSE: After presenting your proposal on a call</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-green">closing script</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"Based on everything we've discussed, I'm confident I can deliver this and the results will be measurable from day one. I can put a full proposal over in the next 24 hours — or if you want to move fast, we can do a small discovery sprint: $150, I audit your current workflows, and give you a full automation roadmap. <strong>Most clients just say 'build the whole thing' after seeing that roadmap. Which direction feels right for you?</strong>"</p><div class="qa-tip"><strong>⚡ GOLDEN RULE:</strong> After asking the close — STOP TALKING. The first person to speak loses. Let the silence sit. This single habit will make you more money than any script.</div></div>
+    </div>
+    <div class="qa-item" data-cat="close">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qa-q-text">FOLLOW-UP EMAIL: After the call, within 2 hours</span><div style="display:flex;align-items:center;gap:7px;"><span class="qa-q-tag tag-green">closing script</span><span class="qa-arrow">▼</span></div></div>
+      <div class="qa-body"><p class="qa-answer">"Hi [Name] — great talking with you! Quick summary of what we covered: [1-2 sentences of their pain point in their words]. [1 sentence of what you'd build]. I'll have the full proposal over by [specific day/time]. Looking forward to it — Jowie"</p><div class="qa-tip"><strong>⚡ TIP:</strong> Short. Fast. Specific. Don't summarize the whole call. Goal is to stay top of mind and show you listened.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROPOSAL BUILDER ══ -->
+<div class="page" id="proposal">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// PROPOSAL BUILDER</h2>
+      <p>Fill in the fields — proposal generates in real time on the right</p>
+    </div>
+    <div style="display:flex;gap:7px;">
+      <button class="btn btn-ghost btn-sm" onclick="printDoc('proposal')">🖨️ Print / PDF</button>
+      <button class="btn btn-primary btn-sm" onclick="copyProposal()">📋 Copy Text</button>
+    </div>
+  </div>
+  <div class="builder-layout">
+    <div class="builder-form">
+      <div class="card card-sm">
+        <div class="section-label">Client Info</div>
+        <div class="form-group"><label>Client / Company Name</label><input id="p-client" oninput="buildProposal()" placeholder="Acme Corp"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Contact Name</label><input id="p-contact" oninput="buildProposal()" placeholder="John Smith"></div>
+          <div class="form-group"><label>Date</label><input id="p-date" oninput="buildProposal()" type="date"></div>
+        </div>
+        <div class="form-group"><label>Project Title</label><input id="p-title" oninput="buildProposal()" placeholder="AI-Powered Lead Qualification System"></div>
+      </div>
+      <div class="card card-sm">
+        <div class="section-label">The Problem</div>
+        <div class="form-group"><label>Their Pain Points (one per line)</label><textarea id="p-pain" oninput="buildProposal()" placeholder="Team spends 3+ hrs/day manually updating CRM&#10;Leads fall through with no follow-up"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Hours wasted / week</label><input id="p-hours" oninput="buildProposal()" placeholder="20" type="number"></div>
+          <div class="form-group"><label>Monthly cost ($)</label><input id="p-cost" oninput="buildProposal()" placeholder="3200" type="number"></div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="section-label">The Solution</div>
+        <div class="form-group"><label>Platform</label><input id="p-platform" oninput="buildProposal()" placeholder="n8n"></div>
+        <div class="form-group"><label>Deliverables (one per line)</label><textarea id="p-deliverables" oninput="buildProposal()" placeholder="Lead capture & CRM sync workflow&#10;AI lead scoring agent (GPT-4)&#10;Automated follow-up email sequence"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Tools / Integrations</label><input id="p-tools" oninput="buildProposal()" placeholder="n8n, OpenAI, HubSpot, Slack"></div>
+          <div class="form-group"><label>Delivery (days)</label><input id="p-days" oninput="buildProposal()" placeholder="10" type="number"></div>
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="section-label">Pricing</div>
+        <div class="form-group"><label>Line Items (Item | Price, one per line)</label><textarea id="p-items" oninput="buildProposal()" placeholder="Lead capture & CRM sync | 400&#10;AI lead scoring agent | 600&#10;Testing, QA & error handling | included&#10;Documentation & video walkthrough | included"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Total Price (USD)</label><input id="p-total" oninput="buildProposal()" placeholder="1350" type="number"></div>
+          <div class="form-group"><label>Retainer ($/mo)</label><input id="p-retainer" oninput="buildProposal()" placeholder="600"></div>
+        </div>
+      </div>
+    </div>
+    <div class="preview-area" id="proposal-preview"><p style="color:#9ca3af;font-family:'Space Mono',monospace;font-size:11px;">← Fill in the form to generate your proposal...</p></div>
+  </div>
+</div>
+
+<!-- ══ CONTRACT GENERATOR ══ -->
+<div class="page" id="contract">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// CONTRACT GENERATOR</h2>
+      <p>Professional freelance contract — legally structured, client-ready</p>
+    </div>
+    <div style="display:flex;gap:7px;">
+      <button class="btn btn-ghost btn-sm" onclick="printDoc('contract')">🖨️ Print / PDF</button>
+      <button class="btn btn-primary btn-sm" onclick="copyContract()">📋 Copy Text</button>
+    </div>
+  </div>
+  <div class="builder-layout">
+    <div class="builder-form">
+      <div class="card card-sm">
+        <div class="section-label">Parties</div>
+        <div class="form-group"><label>Client Full Name / Company</label><input id="c-client" oninput="buildContract()" placeholder="Acme Corp / John Smith"></div>
+        <div class="form-group"><label>Client Address / Country</label><input id="c-caddr" oninput="buildContract()" placeholder="Austin, TX, USA"></div>
+        <div class="form-group"><label>Contract Date</label><input id="c-date" oninput="buildContract()" type="date"></div>
+      </div>
+      <div class="card card-sm">
+        <div class="section-label">Project Scope</div>
+        <div class="form-group"><label>Project Name</label><input id="c-project" oninput="buildContract()" placeholder="AI Lead Automation System"></div>
+        <div class="form-group"><label>Scope Description</label><textarea id="c-scope" oninput="buildContract()" placeholder="Build an n8n-based AI workflow system for lead capture, scoring, CRM sync, and automated follow-up sequences."></textarea></div>
+        <div class="form-group"><label>Deliverables (one per line)</label><textarea id="c-deliverables" oninput="buildContract()" placeholder="Lead capture workflow&#10;AI scoring agent&#10;CRM sync&#10;Documentation & SOPs"></textarea></div>
+      </div>
+      <div class="card card-sm">
+        <div class="section-label">Payment</div>
+        <div class="form-row">
+          <div class="form-group"><label>Total Fee (USD)</label><input id="c-total" oninput="buildContract()" placeholder="1350" type="number"></div>
+          <div class="form-group"><label>Deposit (USD)</label><input id="c-deposit" oninput="buildContract()" placeholder="675" type="number"></div>
+        </div>
+        <div class="form-group"><label>Payment Method</label><input id="c-paymethod" oninput="buildContract()" placeholder="Wise / PayPal / Bank Transfer"></div>
+      </div>
+      <div class="card card-sm">
+        <div class="section-label">Timeline & Revisions</div>
+        <div class="form-row">
+          <div class="form-group"><label>Start Date</label><input id="c-start" oninput="buildContract()" type="date"></div>
+          <div class="form-group"><label>Deadline (days)</label><input id="c-deadline" oninput="buildContract()" placeholder="10" type="number"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Revision Rounds</label><input id="c-revisions" oninput="buildContract()" placeholder="1" type="number"></div>
+          <div class="form-group"><label>Hourly Extra ($/hr)</label><input id="c-hourly" oninput="buildContract()" placeholder="50" type="number"></div>
+        </div>
+      </div>
+    </div>
+    <div class="preview-area" id="contract-preview"><p style="color:#9ca3af;font-family:'Space Mono',monospace;font-size:11px;">← Fill in the form to generate your contract...</p></div>
+  </div>
+</div>
+
+<!-- ══ MESSAGE TEMPLATES ══ -->
+<div class="page" id="templates">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// MESSAGE TEMPLATES</h2>
+      <p>Copy-paste scripts for every stage of the client journey</p>
+    </div>
+    <span class="page-tag tag-teal">CLICK CARD TO COPY</span>
+  </div>
+  <div class="template-grid">
+    <div class="template-card" style="--tc-color:var(--blue)" onclick="openTemplate('linkedin-cold')"><div class="tc-icon">💼</div><div class="tc-title">LinkedIn Cold Outreach</div><div class="tc-desc">First-touch connection message for Ops Managers & Agency Owners</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--teal)" onclick="openTemplate('follow-up')"><div class="tc-icon">📬</div><div class="tc-title">Post-Call Follow-Up</div><div class="tc-desc">Send within 2 hours of a discovery call. Keeps you top of mind.</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--green)" onclick="openTemplate('proposal-send')"><div class="tc-icon">📋</div><div class="tc-title">Proposal Delivery Email</div><div class="tc-desc">Email that sends your proposal — designed to get a reply, not just a read</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--amber)" onclick="openTemplate('no-response')"><div class="tc-icon">🔁</div><div class="tc-title">No Response Follow-Up</div><div class="tc-desc">After 3–5 days of silence post-proposal. Short, non-pushy nudge.</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--purple)" onclick="openTemplate('project-start')"><div class="tc-icon">🚀</div><div class="tc-title">Project Kickoff Message</div><div class="tc-desc">Send after deposit received. Sets expectations, requests access.</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--pink)" onclick="openTemplate('project-done')"><div class="tc-icon">🎉</div><div class="tc-title">Project Delivery Message</div><div class="tc-desc">Final delivery with Loom walkthrough link and review request</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--teal)" onclick="openTemplate('retainer-upsell')"><div class="tc-icon">💰</div><div class="tc-title">Retainer Upsell</div><div class="tc-desc">Pitch a monthly retainer after successful project delivery</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--blue)" onclick="openTemplate('upwork-proposal')"><div class="tc-icon">🌐</div><div class="tc-title">Upwork Job Proposal</div><div class="tc-desc">Short, punchy Upwork proposal that stands out from the crowd</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--red)" onclick="openTemplate('scope-creep')"><div class="tc-icon">🛑</div><div class="tc-title">Scope Creep Response</div><div class="tc-desc">Politely decline out-of-scope requests and re-price professionally</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--green)" onclick="openTemplate('review-request')"><div class="tc-icon">⭐</div><div class="tc-title">Review / Testimonial Request</div><div class="tc-desc">Ask for a review on Upwork / Google / LinkedIn after delivery</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--amber)" onclick="openTemplate('late-payment')"><div class="tc-icon">💸</div><div class="tc-title">Late Payment Reminder</div><div class="tc-desc">Professional, firm payment reminder. Escalating versions included.</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+    <div class="template-card" style="--tc-color:var(--purple)" onclick="openTemplate('nda')"><div class="tc-icon">🔒</div><div class="tc-title">NDA (Short Form)</div><div class="tc-desc">One-page mutual NDA — send when client asks about data security</div><button class="btn btn-ghost btn-xs tc-copy-btn">Copy Template →</button></div>
+  </div>
+</div>
+
+<!-- ══ RATE CALCULATOR ══ -->
+<div class="page" id="calculator">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// RATE CALCULATOR</h2>
+      <p>Price your project right — based on value, not time</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="currency-toggle">
+        <button class="currency-btn active" onclick="setCurrency('USD',this);calcRate()" id="calc-usd-btn">USD $</button>
+        <button class="currency-btn" onclick="setCurrency('PHP',this);calcRate()" id="calc-php-btn">PHP ₱</button>
+      </div>
+      <span class="page-tag tag-amber">ANCHOR TO ROI</span>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="section-label">Project Complexity</div>
+        <div class="form-group"><label>Type of Project</label>
+          <select id="r-type" onchange="calcRate()">
+            <option value="simple">Simple automation (1–2 workflows, no AI)</option>
+            <option value="medium">Standard automation (3–5 workflows, API integrations)</option>
+            <option value="complex">Complex system (AI agents, CRM, multiple tools)</option>
+            <option value="rag">RAG / AI Knowledge Base system</option>
+            <option value="webapp">Full web app + automation</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Estimated Hours to Build</label><input id="r-hours" type="number" placeholder="20" oninput="calcRate()"></div>
+        <div class="form-group"><label>Client Location</label>
+          <select id="r-location" onchange="calcRate()">
+            <option value="us">USA / Canada</option>
+            <option value="au">Australia / UK / EU</option>
+            <option value="sea">Southeast Asia / PH local</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Urgency</label>
+          <select id="r-urgency" onchange="calcRate()">
+            <option value="normal">Normal (1–2 weeks)</option>
+            <option value="rush">Rush (under 5 days) +25%</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Client's monthly cost of the problem ($)</label><input id="r-roi" type="number" placeholder="3000" oninput="calcRate()"></div>
+      </div>
+      <div class="card">
+        <div class="section-label">Hourly Rate Reference</div>
+        <div id="rate-ref-table" style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:11px;color:var(--text2)">Starting out</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--blue)" id="ref-1">$25–35/hr</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:11px;color:var(--text2)">Established (JSS 90%+)</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--blue)" id="ref-2">$40–60/hr</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:11px;color:var(--text2)">Senior specialist</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--blue)" id="ref-3">$75–100/hr</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0">
+            <span style="font-size:11px;color:var(--text2)">AI/RAG premium tier</span>
+            <span style="font-family:var(--mono);font-size:12px;color:var(--teal)" id="ref-4">$100–150/hr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="rate-result" id="rate-result">
+        <div class="rate-label">RECOMMENDED PROJECT PRICE</div>
+        <div class="rate-val" id="r-rec">—</div>
+        <div class="rate-range" id="r-range">Fill in the form to calculate →</div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <div class="section-label">Price Breakdown</div>
+        <div id="r-details" style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:2;">Fill in form above...</div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <div class="section-label">ROI Script for Client</div>
+        <div id="r-roi-script" style="font-size:12px;color:var(--text2);line-height:1.8;">Enter their monthly cost of the problem above...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLIENT TRACKER ══ -->
+<div class="page" id="tracker">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// CLIENT TRACKER</h2>
+      <p>Your pipeline — drag cards between columns. Saved in your browser.</p>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="openAddClient()">+ Add Client</button>
+  </div>
+  <div class="kanban" id="kanban-board">
+    <div class="kanban-col" id="kanban-lead" ondragover="handleDragOver(event,'lead')" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'lead')">
+      <div class="kanban-col-header"><span class="kanban-col-title" style="color:var(--text2)">🔍 Lead</span><span class="kanban-count" id="cnt-lead">0</span></div>
+      <div id="col-lead"></div>
+    </div>
+    <div class="kanban-col" id="kanban-proposal" ondragover="handleDragOver(event,'proposal')" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'proposal')">
+      <div class="kanban-col-header"><span class="kanban-col-title" style="color:var(--blue2)">💬 Proposal</span><span class="kanban-count" id="cnt-proposal">0</span></div>
+      <div id="col-proposal"></div>
+    </div>
+    <div class="kanban-col" id="kanban-progress" ondragover="handleDragOver(event,'progress')" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'progress')">
+      <div class="kanban-col-header"><span class="kanban-col-title" style="color:var(--amber)">🔨 In Progress</span><span class="kanban-count" id="cnt-progress">0</span></div>
+      <div id="col-progress"></div>
+    </div>
+    <div class="kanban-col" id="kanban-done" ondragover="handleDragOver(event,'done')" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event,'done')">
+      <div class="kanban-col-header"><span class="kanban-col-title" style="color:var(--green)">✅ Paid / Done</span><span class="kanban-count" id="cnt-done">0</span></div>
+      <div id="col-done"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ INCOME TRACKER ══ -->
+<div class="page" id="income">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// INCOME TRACKER</h2>
+      <p>Log every peso and dollar. Saved in your browser.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="currency-toggle">
+        <button class="currency-btn active" onclick="setCurrency('USD',this)" id="inc-usd-btn">USD $</button>
+        <button class="currency-btn" onclick="setCurrency('PHP',this)" id="inc-php-btn">PHP ₱</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openAddIncome()">+ Log Payment</button>
+    </div>
+  </div>
+
+  <div class="income-total-bar" id="income-totals">
+    <div class="it-item"><div class="it-val" style="color:var(--green)" id="it-month">₱0</div><div class="it-lbl">This Month</div></div>
+    <div class="it-item"><div class="it-val" style="color:var(--blue2)" id="it-year">₱0</div><div class="it-lbl">This Year</div></div>
+    <div class="it-item"><div class="it-val" style="color:var(--amber)" id="it-pending">₱0</div><div class="it-lbl">Pending</div></div>
+    <div class="it-item"><div class="it-val" style="color:var(--text0)" id="it-total">₱0</div><div class="it-lbl">All Time</div></div>
+    <div class="it-item"><div class="it-val" style="color:var(--purple);font-size:13px;" id="it-rate">1 USD = ₱56.50</div><div class="it-lbl">Exchange Rate</div></div>
+  </div>
+
+  <div class="card">
+    <div class="income-row header">
+      <span>Client / Project</span>
+      <span>Date</span>
+      <span>Amount (USD)</span>
+      <span>Status</span>
+      <span></span>
+    </div>
+    <div id="income-list">
+      <div style="padding:20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3);">No payments logged yet. Click "+ Log Payment" to start.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROJECT CHECKLIST ══ -->
+<div class="page" id="checklist">
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2>// PROJECT CHECKLIST</h2>
+      <p>Never miss a step — from first contact to final delivery</p>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="resetChecklist()">↺ Reset All</button>
+  </div>
+  <div class="grid g2">
+    <div id="checklist-left"></div>
+    <div id="checklist-right"></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ══ TEMPLATE MODAL ══ -->
+<div class="modal-overlay" id="template-modal" onclick="handleOverlayClick(event,'template-modal')">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal('template-modal')">✕</div>
+    <h3 id="modal-title">Template</h3>
+    <p id="modal-desc"></p>
+    <textarea id="modal-content" readonly></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-primary" onclick="copyModalContent()">📋 Copy to Clipboard</button>
+      <button class="btn btn-ghost" onclick="closeModal('template-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADD CLIENT MODAL ══ -->
+<div class="modal-overlay" id="client-modal" onclick="handleOverlayClick(event,'client-modal')">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal('client-modal')">✕</div>
+    <h3>Add New Client</h3>
+    <p>Track this client through your pipeline</p>
+    <div class="form-group"><label>Client / Company Name</label><input id="nc-name" placeholder="Acme Corp"></div>
+    <div class="form-group"><label>Project</label><input id="nc-project" placeholder="AI Lead Automation"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Budget (USD)</label><input id="nc-budget" placeholder="1500" type="number"></div>
+      <div class="form-group"><label>Stage</label>
+        <select id="nc-stage">
+          <option value="lead">Lead</option>
+          <option value="proposal">Proposal Sent</option>
+          <option value="progress">In Progress</option>
+          <option value="done">Paid / Done</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Notes</label><textarea id="nc-notes" placeholder="Discovery call done, waiting on scope confirmation..."></textarea></div>
+    <button class="btn btn-primary" onclick="addClient()" style="width:100%">Add to Pipeline</button>
+  </div>
+</div>
+
+<!-- ══ ADD INCOME MODAL ══ -->
+<div class="modal-overlay" id="income-modal" onclick="handleOverlayClick(event,'income-modal')">
+  <div class="modal">
+    <div class="modal-close" onclick="closeModal('income-modal')">✕</div>
+    <h3>Log Payment</h3>
+    <p>Track every dollar that comes in</p>
+    <div class="form-group"><label>Client / Project</label><input id="ni-client" placeholder="Acme Corp — Lead Automation"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Amount (USD)</label><input id="ni-amount" placeholder="1350" type="number"></div>
+      <div class="form-group"><label>Date</label><input id="ni-date" type="date"></div>
+    </div>
+    <div class="form-group"><label>Status</label>
+      <select id="ni-status">
+        <option value="paid">Paid ✅</option>
+        <option value="pending">Pending ⏳</option>
+        <option value="overdue">Overdue 🔴</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Notes (optional)</label><input id="ni-notes" placeholder="Deposit / Final payment / Retainer..."></div>
+    <button class="btn btn-primary" onclick="addIncome()" style="width:100%">Log Payment</button>
+  </div>
+</div>
+
+<div id="toast">✓ Done!</div>
+
+<script>
+// ─── CURRENCY ───
+const PHP_RATE = 56.50;
+let currentCurrency = 'PHP';
+
+function setCurrency(cur, btn) {
+  currentCurrency = cur;
+  const group = btn.closest('.currency-toggle');
+  if (group) group.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderIncome();
+  updateDashboard();
+  if (typeof calcRate === 'function') calcRate();
+}
+
+function formatMoney(usdAmount) {
+  if (currentCurrency === 'PHP') {
+    const php = Math.round(usdAmount * PHP_RATE);
+    return '₱' + php.toLocaleString();
+  }
+  return '$' + usdAmount.toLocaleString();
+}
+
+function formatMoneyRaw(usdAmount, cur) {
+  const c = cur || currentCurrency;
+  if (c === 'PHP') {
+    return '₱' + Math.round(usdAmount * PHP_RATE).toLocaleString();
+  }
+  return '$' + usdAmount.toLocaleString();
+}
+
+// ─── NAV ───
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+  if (id === 'dashboard') updateDashboard();
+}
+
+// ─── Q&A ───
+function toggleQA(el) { el.closest('.qa-item').classList.toggle('open'); }
+function filterQA(cat, btn) {
+  document.querySelectorAll('#qa-filters .btn').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-ghost'); });
+  btn.classList.add('btn-primary'); btn.classList.remove('btn-ghost');
+  document.querySelectorAll('.qa-item').forEach(item => {
+    item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+  });
+}
+
+// ─── HELPERS ───
+function v(id) { return (document.getElementById(id)||{}).value || ''; }
+function fmtDate(val) {
+  if (!val) return '[DATE]';
+  const parts = val.split('-');
+  const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  return d.toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+}
+
+// ─── MODAL HELPERS ───
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function handleOverlayClick(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+// ─── PROPOSAL BUILDER ───
+function buildProposal() {
+  const client = v('p-client') || '[CLIENT NAME]';
+  const contact = v('p-contact') || '[CONTACT]';
+  const date = fmtDate(v('p-date'));
+  const title = v('p-title') || '[PROJECT TITLE]';
+  const pains = v('p-pain').split('\n').filter(l=>l.trim());
+  const platform = v('p-platform') || 'n8n';
+  const delivs = v('p-deliverables').split('\n').filter(l=>l.trim());
+  const tools = v('p-tools') || '[TOOLS]';
+  const days = v('p-days') || '[X]';
+  const hours = v('p-hours') || '';
+  const monthlyCost = v('p-cost') ? `$${parseInt(v('p-cost')).toLocaleString()}` : '[X]';
+  const items = v('p-items').split('\n').filter(l=>l.trim()).map(l => {
+    const [name, price] = l.split('|').map(s=>s.trim());
+    return {name: name||l, price: price||''};
+  });
+  const total = v('p-total') ? `$${parseInt(v('p-total')).toLocaleString()}` : '[TOTAL]';
+  const deposit = v('p-total') ? `$${Math.round(parseInt(v('p-total'))/2).toLocaleString()}` : '[50%]';
+  const retainer = v('p-retainer') ? `$${parseInt(v('p-retainer'))}/month` : null;
+
+  const painItems = pains.map(p=>`<li>${p}</li>`).join('') || '<li>[Add pain points from discovery call]</li>';
+  const numDeliv = delivs.length || 1;
+  const daysNum = parseInt(days) || 10;
+  const delivItems = delivs.map((d,i)=>`<tr><td style="font-weight:700;color:#185FA5">${i+1}</td><td>${d}</td><td>Days ${Math.ceil((i+1)*daysNum/numDeliv)}</td></tr>`).join('') || '<tr><td>—</td><td>[Add deliverables]</td><td>—</td></tr>';
+  const priceRows = items.map(it=>{
+    const p = it.price;
+    const fmt = !p ? '' : (p.toLowerCase()==='included'||isNaN(parseFloat(p))) ? p : `$${parseInt(p).toLocaleString()}`;
+    return `<tr><td>${it.name}</td><td style="font-family:'Space Mono',monospace;color:#185FA5;font-weight:700">${fmt}</td></tr>`;
+  }).join('');
+
+  const html = `
+    <h1>AUTOMATION PROJECT PROPOSAL</h1>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:14px;font-family:'Space Mono',monospace">${title}</p>
+    <div class="meta-grid">
+      <div class="meta-label">Prepared for</div><div class="meta-val">${client} — ${contact}</div>
+      <div class="meta-label">Prepared by</div><div class="meta-val">Jowie Orlina Flores — AI Automation Specialist</div>
+      <div class="meta-label">Date</div><div class="meta-val">${date}</div>
+      <div class="meta-label">Valid until</div><div class="meta-val">30 days from date above</div>
+      <div class="meta-label">Contact</div><div class="meta-val">jowieflores.freelancer@gmail.com · 09394911140</div>
+    </div>
+    <div class="section-banner">◆ 1 — EXECUTIVE SUMMARY</div>
+    <p>This proposal outlines a tailored automation solution for <strong>${client}</strong>. Based on our discovery conversation, your team currently faces:</p>
+    <ul>${painItems}</ul>
+    ${hours ? `<p>This costs your team an estimated <strong>${hours} hours/week</strong> — roughly <strong>${monthlyCost}/month</strong> in avoidable labor. I will eliminate these bottlenecks through intelligent automation on <strong>${platform}</strong>, delivering measurable ROI within 30 days.</p>` : ''}
+    <div class="section-banner">◆ 2 — PROPOSED SOLUTION</div>
+    <table class="deliv-table"><thead><tr><th>#</th><th>Deliverable</th><th>Timeline</th></tr></thead><tbody>${delivItems}</tbody></table>
+    <p><strong>Platform:</strong> ${platform} &nbsp;|&nbsp; <strong>Integrations:</strong> ${tools} &nbsp;|&nbsp; <strong>Delivery:</strong> ${days} business days</p>
+    <div class="section-banner">◆ 3 — WHAT'S INCLUDED</div>
+    <div class="inc-grid">
+      <div class="inc-box yes"><h4>✅ INCLUDED</h4><ul><li>All deliverables listed above</li><li>Error handling & failure alerts</li><li>Full documentation & SOPs</li><li>Video walkthrough (Loom)</li><li>2 weeks post-launch support</li><li>1 round of revisions</li></ul></div>
+      <div class="inc-box no"><h4>⚠️ NOT INCLUDED</h4><ul><li>Platform subscription costs</li><li>Third-party API fees (OpenAI, etc.)</li><li>Additional workflows outside scope</li><li>Ongoing maintenance (see retainer)</li></ul></div>
+    </div>
+    <div class="section-banner">◆ 4 — INVESTMENT</div>
+    <table class="deliv-table"><thead><tr><th>Service</th><th>Price</th></tr></thead><tbody>${priceRows}</tbody></table>
+    <div class="price-total"><span>TOTAL PROJECT INVESTMENT</span><span>${total}</span></div>
+    <p style="margin-top:10px"><strong>Payment:</strong> 50% deposit (${deposit}) to begin · 50% on delivery</p>
+    <p><strong>Accepted:</strong> Wise · PayPal · Bank Transfer · Upwork Escrow</p>
+    ${retainer ? `<div class="highlight-box"><strong>Optional monthly retainer: ${retainer}</strong> — monitoring, maintenance, and up to 2 new workflows/month.</div>` : ''}
+    <div class="section-banner">◆ 5 — WHY WORK WITH ME</div>
+    <ul>
+      <li><strong>AI + Automation:</strong> I build agents that think, qualify, and decide.</li>
+      <li><strong>Documentation guarantee:</strong> Every workflow ships with SOPs & video walkthrough.</li>
+      <li><strong>Error handling:</strong> Slack/email alerts, retry logic, audit logs. No silent failures.</li>
+      <li><strong>Direct communication:</strong> You talk to me directly — no middlemen.</li>
+    </ul>
+    <div class="section-banner">◆ 6 — TERMS</div>
+    <ul>
+      <li>Revisions: 1 round per deliverable included</li>
+      <li>Client provides API/tool access within 2 business days of project start</li>
+      <li>All workflows and code transfer to client upon final payment</li>
+      <li>NDA on request</li>
+    </ul>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px;">
+      <div class="sig-line">Client Signature & Date</div>
+      <div class="sig-line">Jowie Flores · Contractor</div>
+    </div>
+    <p style="margin-top:16px;text-align:center;font-size:11px;color:#6b7280;font-family:'Space Mono',monospace">jowieflores.freelancer@gmail.com · freelancer-jowie.onrender.com</p>`;
+
+  document.getElementById('proposal-preview').innerHTML = html;
+  document.getElementById('proposal-preview-print').innerHTML = html;
+}
+
+// ─── CONTRACT BUILDER ───
+function buildContract() {
+  const client = v('c-client') || '[CLIENT NAME]';
+  const caddr = v('c-caddr') || '[CLIENT ADDRESS]';
+  const date = fmtDate(v('c-date'));
+  const project = v('c-project') || '[PROJECT NAME]';
+  const scope = v('c-scope') || '[Scope description]';
+  const delivs = v('c-deliverables').split('\n').filter(l=>l.trim());
+  const total = v('c-total') ? `$${parseInt(v('c-total')).toLocaleString()} USD` : '[TOTAL]';
+  const deposit = v('c-deposit') ? `$${parseInt(v('c-deposit')).toLocaleString()} USD` : '[DEPOSIT]';
+  const paymethod = v('c-paymethod') || '[PAYMENT METHOD]';
+  const start = fmtDate(v('c-start'));
+  const deadline = v('c-deadline') || '[X]';
+  const revisions = v('c-revisions') || '1';
+  const hourly = v('c-hourly') ? `$${v('c-hourly')}/hr USD` : '$50/hr USD';
+  const delivList = delivs.map(d=>`<li>${d}</li>`).join('') || '<li>[List deliverables]</li>';
+  const balance = v('c-total') && v('c-deposit') ? `$${(parseInt(v('c-total'))-parseInt(v('c-deposit'))).toLocaleString()} USD` : '[BALANCE]';
+  const contractNo = 'JOF-' + (v('c-date')||'').replace(/-/g,'').slice(-6) || 'JOF-XXXXXX';
+
+  const html = `
+    <h1>FREELANCE SERVICE AGREEMENT</h1>
+    <p style="font-family:'Space Mono',monospace;font-size:10px;color:#6b7280">Contract No. ${contractNo} · Effective: ${date}</p>
+    <div class="meta-grid">
+      <div class="meta-label">CONTRACTOR</div><div class="meta-val">Jowie Orlina Flores · Naga, Bicol, Philippines · jowieflores.freelancer@gmail.com</div>
+      <div class="meta-label">CLIENT</div><div class="meta-val">${client} · ${caddr}</div>
+      <div class="meta-label">PROJECT</div><div class="meta-val">${project}</div>
+      <div class="meta-label">EFFECTIVE DATE</div><div class="meta-val">${date}</div>
+    </div>
+    <div class="section-banner">◆ 1. SCOPE OF WORK</div>
+    <div class="contract-clause"><p><strong>1.1</strong> ${scope}</p><p><strong>1.2 Deliverables:</strong></p><ul>${delivList}</ul><p><strong>1.3</strong> Any work beyond this scope requires a written change order and additional payment before work begins.</p></div>
+    <div class="section-banner">◆ 2. TIMELINE</div>
+    <div class="contract-clause"><p><strong>2.1</strong> Work commences on <strong>${start}</strong>, upon receipt of deposit.</p><p><strong>2.2</strong> Estimated completion: <strong>${deadline} business days</strong> from start date, assuming Client provides required access and feedback within 48 hours of each review request.</p></div>
+    <div class="section-banner">◆ 3. PAYMENT</div>
+    <div class="contract-clause"><p><strong>3.1 Total Fee:</strong> ${total}</p><p><strong>3.2 Deposit:</strong> ${deposit} — due before work begins. Non-refundable if Client cancels after work has started.</p><p><strong>3.3 Final Payment:</strong> ${balance} — due upon delivery and Client approval.</p><p><strong>3.4 Method:</strong> ${paymethod}</p><p><strong>3.5 Late Payments:</strong> Invoices unpaid after 7 days incur a 2% monthly fee.</p><p><strong>3.6 Extra Work:</strong> Billed at ${hourly}, invoiced separately.</p></div>
+    <div class="section-banner">◆ 4. REVISIONS</div>
+    <div class="contract-clause"><p><strong>4.1</strong> Includes <strong>${revisions} round(s) of revisions</strong> per deliverable.</p><p><strong>4.2</strong> Revision requests must be submitted within 5 business days of delivery.</p></div>
+    <div class="section-banner">◆ 5. INTELLECTUAL PROPERTY</div>
+    <div class="contract-clause"><p><strong>5.1</strong> All custom-built workflows and code transfer to Client upon receipt of final payment.</p><p><strong>5.2</strong> Contractor retains the right to reference this project in their portfolio (without sharing proprietary data).</p></div>
+    <div class="section-banner">◆ 6. CONFIDENTIALITY</div>
+    <div class="contract-clause"><p><strong>6.1</strong> Both parties agree to keep all proprietary information confidential during and after this engagement.</p><p><strong>6.2</strong> This confidentiality obligation survives termination for 2 years.</p></div>
+    <div class="section-banner">◆ 7. WARRANTIES & LIABILITY</div>
+    <div class="contract-clause"><p><strong>7.1</strong> Contractor warrants deliverables will function as described for 14 days after delivery.</p><p><strong>7.2</strong> Contractor is not liable for third-party platform outages or API changes.</p><p><strong>7.3</strong> Total liability shall not exceed the total amount paid by Client.</p></div>
+    <div class="section-banner">◆ 8. TERMINATION</div>
+    <div class="contract-clause"><p><strong>8.1</strong> Either party may terminate with 7 days written notice.</p><p><strong>8.2</strong> If Client terminates: pays for all work completed plus non-refundable deposit.</p></div>
+    <div class="section-banner">◆ 9. GOVERNING LAW</div>
+    <div class="contract-clause"><p>This agreement is governed by the laws of the Republic of the Philippines.</p></div>
+    <p style="margin-top:20px;font-size:11px;color:#374151">By signing below, both parties agree to the terms:</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:20px;">
+      <div><div class="sig-line">Client Signature</div><p style="font-size:10px;color:#6b7280;margin-top:5px;">${client} · ${date}</p></div>
+      <div><div class="sig-line">Contractor Signature</div><p style="font-size:10px;color:#6b7280;margin-top:5px;">Jowie Orlina Flores · ${date}</p></div>
+    </div>`;
+
+  document.getElementById('contract-preview').innerHTML = html;
+  document.getElementById('contract-preview-print').innerHTML = html;
+}
+
+// ─── PRINT ───
+function printDoc(type) {
+  document.body.classList.remove('printing-proposal','printing-contract');
+  document.body.classList.add('printing-'+type);
+  window.print();
+  setTimeout(()=>document.body.classList.remove('printing-proposal','printing-contract'), 1000);
+}
+
+// ─── RATE CALCULATOR ───
+function calcRate() {
+  const type = v('r-type');
+  const hrs = parseFloat(v('r-hours')) || 0;
+  const loc = v('r-location');
+  const urgency = v('r-urgency');
+  const roi = parseFloat(v('r-roi')) || 0;
+
+  const baseRates = { simple:35, medium:45, complex:60, rag:75, webapp:65 };
+  const locMult = { us:1.0, au:0.9, sea:0.6 };
+  const typeFloor = { simple:150, medium:400, complex:800, rag:1200, webapp:1500 };
+  const typeCeil = { simple:600, medium:1500, complex:4000, rag:5000, webapp:6000 };
+  const rateRef = {
+    1: ['$25–35/hr', '₱' + Math.round(25*PHP_RATE).toLocaleString() + '–₱' + Math.round(35*PHP_RATE).toLocaleString() + '/hr'],
+    2: ['$40–60/hr', '₱' + Math.round(40*PHP_RATE).toLocaleString() + '–₱' + Math.round(60*PHP_RATE).toLocaleString() + '/hr'],
+    3: ['$75–100/hr', '₱' + Math.round(75*PHP_RATE).toLocaleString() + '–₱' + Math.round(100*PHP_RATE).toLocaleString() + '/hr'],
+    4: ['$100–150/hr', '₱' + Math.round(100*PHP_RATE).toLocaleString() + '–₱' + Math.round(150*PHP_RATE).toLocaleString() + '/hr'],
+  };
+
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('ref-'+i);
+    if (el) el.textContent = currentCurrency === 'PHP' ? rateRef[i][1] : rateRef[i][0];
+  });
+
+  const rate = baseRates[type] * locMult[loc];
+  let priceUSD = hrs > 0 ? Math.round(hrs * rate) : Math.round((typeFloor[type]+typeCeil[type])/2);
+  priceUSD = Math.max(typeFloor[type], Math.min(typeCeil[type], priceUSD));
+  if (urgency === 'rush') priceUSD = Math.round(priceUSD * 1.25);
+
+  const loUSD = Math.round(priceUSD * 0.85 / 50) * 50;
+  const hiUSD = Math.round(priceUSD * 1.20 / 50) * 50;
+
+  document.getElementById('r-rec').textContent = formatMoneyRaw(priceUSD);
+  document.getElementById('r-range').textContent = `Range: ${formatMoneyRaw(loUSD)} – ${formatMoneyRaw(hiUSD)}`;
+
+  document.getElementById('r-details').innerHTML = `
+Base hourly: $${rate.toFixed(0)}/hr · ${locMult[loc]*100}% location<br>
+Est. hours: ${hrs||'—'}<br>
+Rush: ${urgency==='rush'?'+25%':'none'}<br>
+Floor/ceil: $${typeFloor[type].toLocaleString()} – $${typeCeil[type].toLocaleString()}<br>
+─────────────────────<br>
+<span style="color:var(--blue2)">USD: $${priceUSD.toLocaleString()}</span><br>
+<span style="color:var(--purple)">PHP: ₱${Math.round(priceUSD*PHP_RATE).toLocaleString()}</span>`;
+
+  if (roi > 0) {
+    const payback = Math.round(priceUSD/roi*30);
+    const roiPHP = Math.round(roi*PHP_RATE);
+    document.getElementById('r-roi-script').innerHTML = `
+      <span style="color:var(--text1)">"Your current process costs roughly 
+      <strong style="color:var(--amber)">$${roi.toLocaleString()}/month (≈ ₱${roiPHP.toLocaleString()})</strong> in team time. 
+      At <strong style="color:var(--blue2)">${formatMoneyRaw(priceUSD)}</strong>, this project pays for itself in approximately 
+      <strong style="color:var(--green)">${payback} days</strong>. After that, it's pure savings every month."</span>`;
+  } else {
+    document.getElementById('r-roi-script').innerHTML = `<span style="color:var(--text3)">Enter their monthly cost above to generate your ROI pitch...</span>`;
+  }
+}
+
+// ─── KANBAN ───
+let clients = JSON.parse(localStorage.getItem('jof_clients')||'[]');
+let dragId = null;
+
+function renderKanban() {
+  ['lead','proposal','progress','done'].forEach(stage => {
+    const col = document.getElementById('col-'+stage);
+    const cards = clients.filter(c=>c.stage===stage);
+    col.innerHTML = cards.map(c=>`
+      <div class="kanban-card" id="kc-${c.id}" draggable="true"
+        ondragstart="handleDragStart(event,'${c.id}')"
+        ondragend="handleDragEnd(event)">
+        <div class="kc-name">${escHtml(c.name)}</div>
+        <div class="kc-project">${escHtml(c.project||'—')}</div>
+        ${c.notes?`<div class="kc-notes">${escHtml(c.notes)}</div>`:''}
+        <div class="kc-budget">${formatMoney(parseInt(c.budget||0))}</div>
+        <div class="kc-actions">
+          <button class="btn btn-xs" style="background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25)" onclick="removeClient('${c.id}')">✕ Remove</button>
+        </div>
+      </div>`).join('');
+    document.getElementById('cnt-'+stage).textContent = cards.length;
+  });
+  updateDashboard();
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function handleDragStart(e, id) {
+  dragId = id;
+  setTimeout(() => {
+    const el = document.getElementById('kc-'+id);
+    if (el) el.classList.add('dragging');
+  }, 0);
+  e.dataTransfer.effectAllowed = 'move';
+}
+function handleDragEnd(e) {
+  if (dragId) {
+    const el = document.getElementById('kc-'+dragId);
+    if (el) el.classList.remove('dragging');
+  }
+  document.querySelectorAll('.kanban-col').forEach(c=>c.classList.remove('drag-over'));
+}
+function handleDragOver(e, stage) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.kanban-col').forEach(c=>c.classList.remove('drag-over'));
+  document.getElementById('kanban-'+stage).classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+function handleDrop(e, stage) {
+  e.preventDefault();
+  document.querySelectorAll('.kanban-col').forEach(c=>c.classList.remove('drag-over'));
+  if (!dragId) return;
+  const c = clients.find(x=>x.id===dragId);
+  if (c && c.stage !== stage) {
+    c.stage = stage;
+    localStorage.setItem('jof_clients', JSON.stringify(clients));
+    renderKanban();
+    showToast(`Moved to ${stage}!`);
+  }
+  dragId = null;
+}
+
+function openAddClient() { document.getElementById('client-modal').classList.add('open'); }
+function addClient() {
+  const name = document.getElementById('nc-name').value.trim();
+  if (!name) return;
+  clients.push({
+    id: Date.now().toString(),
+    name,
+    project: document.getElementById('nc-project').value,
+    budget: document.getElementById('nc-budget').value,
+    stage: document.getElementById('nc-stage').value,
+    notes: document.getElementById('nc-notes').value
+  });
+  localStorage.setItem('jof_clients', JSON.stringify(clients));
+  closeModal('client-modal');
+  ['nc-name','nc-project','nc-budget','nc-notes'].forEach(id=>document.getElementById(id).value='');
+  renderKanban();
+  showToast('Client added!');
+}
+function removeClient(id) {
+  if (!confirm('Remove this client?')) return;
+  clients = clients.filter(c=>c.id!==id);
+  localStorage.setItem('jof_clients', JSON.stringify(clients));
+  renderKanban();
+}
+
+// ─── INCOME TRACKER ───
+let incomes = JSON.parse(localStorage.getItem('jof_income')||'[]');
+
+function renderIncome() {
+  const list = document.getElementById('income-list');
+  const rateEl = document.getElementById('it-rate');
+  if (rateEl) rateEl.textContent = currentCurrency === 'PHP' ? `1 USD = ₱${PHP_RATE}` : 'Rate: ₱' + PHP_RATE + '/USD';
+
+  if (!incomes.length) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text3);">No payments logged yet. Click "+ Log Payment" to start.</div>';
+    updateIncomeTotals();
+    return;
+  }
+  const sorted = [...incomes].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  list.innerHTML = sorted.map(inc=>`
+    <div class="income-row">
+      <span>
+        <span style="font-size:12px;font-weight:600;color:var(--text0)">${escHtml(inc.client)}</span>
+        ${inc.notes?`<span style="font-size:10px;color:var(--text3);display:block">${escHtml(inc.notes)}</span>`:''}
+      </span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text2)">${fmtDate(inc.date)}</span>
+      <span>
+        <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--green)">$${parseInt(inc.amount||0).toLocaleString()}</span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--purple);display:block">≈ ₱${Math.round(parseInt(inc.amount||0)*PHP_RATE).toLocaleString()}</span>
+      </span>
+      <span><span class="income-status status-${inc.status}">${inc.status}</span></span>
+      <span><button class="btn btn-xs" style="background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25)" onclick="removeIncome('${inc.id}')">✕</button></span>
+    </div>`).join('');
+  updateIncomeTotals();
+}
+
+function updateIncomeTotals() {
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  let month=0, year=0, pending=0, all=0;
+  incomes.forEach(inc=>{
+    const amt = parseInt(inc.amount||0);
+    const d = new Date(inc.date+'T00:00:00');
+    if (inc.status==='paid') {
+      all += amt;
+      if (d.getFullYear()===thisYear) year += amt;
+      if (d.getFullYear()===thisYear && d.getMonth()===thisMonth) month += amt;
+    } else if (inc.status==='pending' || inc.status==='overdue') {
+      pending += amt;
+    }
+  });
+  document.getElementById('it-month').textContent = formatMoney(month);
+  document.getElementById('it-year').textContent = formatMoney(year);
+  document.getElementById('it-pending').textContent = formatMoney(pending);
+  document.getElementById('it-total').textContent = formatMoney(all);
+  const earned = document.getElementById('dash-earned');
+  if (earned) earned.textContent = formatMoney(month);
+}
+
+function openAddIncome() {
+  document.getElementById('ni-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('income-modal').classList.add('open');
+}
+function addIncome() {
+  const client = document.getElementById('ni-client').value.trim();
+  const amount = document.getElementById('ni-amount').value;
+  if (!client||!amount) { showToast('Fill in client and amount!'); return; }
+  incomes.push({
+    id: Date.now().toString(),
+    client, amount,
+    date: document.getElementById('ni-date').value || new Date().toISOString().split('T')[0],
+    status: document.getElementById('ni-status').value,
+    notes: document.getElementById('ni-notes').value
+  });
+  localStorage.setItem('jof_income', JSON.stringify(incomes));
+  closeModal('income-modal');
+  ['ni-client','ni-amount','ni-notes'].forEach(id=>document.getElementById(id).value='');
+  renderIncome();
+  showToast('Payment logged!');
+}
+function removeIncome(id) {
+  incomes = incomes.filter(x=>x.id!==id);
+  localStorage.setItem('jof_income', JSON.stringify(incomes));
+  renderIncome();
+}
+
+// ─── DASHBOARD ───
+function updateDashboard() {
+  ['lead','proposal','progress','done'].forEach(stage=>{
+    const el = document.getElementById('dp-'+stage);
+    if (el) el.textContent = clients.filter(c=>c.stage===stage).length;
+  });
+  updateIncomeTotals();
+}
+
+// ─── CHECKLIST ───
+const checklistData = [
+  { title:'🔍 Pre-Sale', color:'var(--blue)', items:['Research the client / company before the call','Prepare 3 relevant workflow examples from portfolio','Have rate calculator open and ready','Confirm calendar invite sent to client','Test your camera, mic, and internet'] },
+  { title:'📞 Discovery Call', color:'var(--teal)', items:['Camera on, background professional','Send agenda 1 hour before the call','Ask all 6 qualifying questions','Take visible notes throughout','Mirror their exact words and phrases','Identify the decision maker','Confirm budget range','Book next step before hanging up'] },
+  { title:'📋 Proposal', color:'var(--amber)', items:["Build proposal within 24 hours of call","Use client's exact words in executive summary","Include quantified ROI (hrs/week, $/month)","List deliverables with specific timelines","Add included / not included section","Set payment terms: 50/50","Send proposal + book review call same message","Follow up if no response in 3 days"] },
+  { title:'📜 Contract & Kickoff', color:'var(--purple)', items:['Send contract before any work starts','Confirm deposit received before starting','Send kickoff message with access request','Create project folder (Google Drive/Notion)','Set up communication channel (Slack/Email)','Confirm timeline and milestone dates'] },
+  { title:'🔨 Build Phase', color:'var(--pink)', items:['Build in dev/test environment first','Error handling on every workflow node','Test with real data samples','Send progress update every 2–3 days','Document everything as you build','Record Loom walkthrough of completed flows','QA test all edge cases before delivery'] },
+  { title:'🎉 Delivery & Follow-Up', color:'var(--green)', items:['Send delivery message with Loom walkthrough','Confirm client approval in writing','Request final payment immediately','Request review/testimonial within 48 hrs','Ask about other pain points (upsell)','Pitch monthly retainer if not already signed','Add to LinkedIn / portfolio (with permission)','Follow up in 30 days to check system health'] }
+];
+function renderChecklist() {
+  const saved = JSON.parse(localStorage.getItem('jof_checklist')||'{}');
+  const left = document.getElementById('checklist-left');
+  const right = document.getElementById('checklist-right');
+  left.innerHTML = ''; right.innerHTML = '';
+  checklistData.forEach((section, si) => {
+    const total = section.items.length;
+    const done = section.items.filter((_,ii)=>saved[`${si}-${ii}`]).length;
+    const pct = Math.round(done/total*100);
+    const html = `<div class="checklist-section" style="border-top:2px solid ${section.color}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${section.color}">${section.title}</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3)">${done}/${total}</div>
+      </div>
+      <div style="height:3px;background:var(--border);border-radius:2px;margin-bottom:10px"><div style="height:100%;width:${pct}%;background:${section.color};border-radius:2px;transition:width .4s"></div></div>
+      ${section.items.map((item,ii)=>{
+        const key = `${si}-${ii}`;
+        const isDone = saved[key];
+        return `<label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;margin-bottom:7px;padding:5px 7px;border-radius:6px;transition:background .1s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+          <input type="checkbox" ${isDone?'checked':''} onchange="saveCheck('${key}',this.checked)" style="width:auto;margin-top:2px;accent-color:${section.color};cursor:pointer">
+          <span style="font-size:12px;color:${isDone?'var(--text3)':'var(--text1)'};text-decoration:${isDone?'line-through':'none'};transition:all .15s">${item}</span>
+        </label>`;
+      }).join('')}
+    </div>`;
+    (si % 2 === 0 ? left : right).innerHTML += html;
+  });
+}
+function saveCheck(key, val) {
+  const saved = JSON.parse(localStorage.getItem('jof_checklist')||'{}');
+  if (val) saved[key]=true; else delete saved[key];
+  localStorage.setItem('jof_checklist', JSON.stringify(saved));
+  renderChecklist();
+}
+function resetChecklist() {
+  if (!confirm('Reset all checklist items?')) return;
+  localStorage.removeItem('jof_checklist');
+  renderChecklist();
+}
+
+// ─── TEMPLATES ───
+const templates = {
+  'linkedin-cold': { title:'LinkedIn Cold Outreach', desc:'Send after connecting. Keep it under 150 words. Personalize the [brackets].', content:`Hi [First Name],
+
+I noticed you're [running/leading] [Company] — looks like you're doing interesting work in [industry/niche].
+
+I help [their type of business] eliminate their most time-consuming manual processes using AI automation (n8n, Make, Zapier). Recently I built a system that saved a [similar company type] 15+ hours/week by automating their [relevant process].
+
+Would it make sense to have a quick 20-minute call to see if there's something similar I could do for your team?
+
+Either way — great to connect!
+
+Jowie Flores
+AI Automation Specialist
+freelancer-jowie.onrender.com` },
+  'follow-up': { title:'Post-Call Follow-Up', desc:'Send within 2 hours of the discovery call. Short, warm, specific.', content:`Hi [Name],
+
+Great talking with you today!
+
+Quick recap:
+• You mentioned your team spends [X hrs/week] on [specific pain point]
+• We discussed automating [solution summary]
+• This could save your team roughly [hrs/week] per week
+
+I'll have a full proposal over by [specific day]. I'll also include a rough ROI breakdown.
+
+Talk soon,
+
+Jowie Flores
+jowieflores.freelancer@gmail.com | 09394911140
+freelancer-jowie.onrender.com` },
+  'proposal-send': { title:'Proposal Delivery Email', desc:'Email accompanying your proposal. Short — let the proposal do the heavy lifting.', content:`Subject: Your Automation Proposal — [Project Name] | Jowie Flores
+
+Hi [Name],
+
+As promised — here's your proposal for [Project Name].
+
+Short version: I can [1-sentence solution] in [X days], saving your team an estimated [X hrs/week]. The investment pays for itself in [X days] based on your current costs.
+
+[Attach proposal / paste link here]
+
+I've blocked time [Thursday/Friday] at [time] for a 15-min walkthrough — does that work?
+
+If you're ready to move forward, just reply with "approved" and I'll send the contract and payment link right away.
+
+Looking forward to it,
+
+Jowie Flores
+AI Automation Specialist
+jowieflores.freelancer@gmail.com` },
+  'no-response': { title:'No-Response Follow-Up', desc:'Send 3–5 days after proposal with no reply. Short and non-pushy.', content:`Hi [Name],
+
+Just checking in — wanted to make sure my proposal came through okay.
+
+No pressure at all — just want to make sure you have everything to make a decision.
+
+If anything's unclear or you have questions, happy to jump on a quick call.
+
+Jowie
+
+---
+Jowie Flores · jowieflores.freelancer@gmail.com` },
+  'project-start': { title:'Project Kickoff Message', desc:'Send after deposit received. Sets expectations clearly.', content:`Hi [Name],
+
+Deposit received — we're officially kicked off! 🚀
+
+To get started, I'll need:
+1. Access to [Tool 1 — e.g., HubSpot account]
+2. Access to [Tool 2 — e.g., n8n instance or I'll set one up]
+3. [Any sample data or docs if applicable]
+
+Here's what the next [X] days look like:
+• Days 1–3: [Phase 1 description]
+• Days 4–7: [Phase 2 description]
+• Days 8–10: Testing, QA, and final delivery
+
+I'll send a progress update every 2–3 days. Best way to reach me is [email/Slack].
+
+Let's build something great,
+
+Jowie Flores` },
+  'project-done': { title:'Project Delivery Message', desc:'Final delivery email with Loom walkthrough. Requests review.', content:`Hi [Name],
+
+Your [Project Name] is ready! 🎉
+
+Here's everything:
+📹 Loom Walkthrough: [LINK]
+📁 Documentation: [LINK]
+🔐 All credentials and access details: [attached/linked]
+
+Delivered:
+✅ [Deliverable 1]
+✅ [Deliverable 2]
+✅ Error handling, monitoring & alerts
+✅ Full SOP documentation
+
+Next steps:
+1. Review the Loom walkthrough (15 min)
+2. Test the workflows with your team
+3. Reply with any feedback — 2 weeks support included
+
+Once approved, I'll send the final invoice for [balance amount].
+
+If you're happy with the work, a quick review on [Upwork/LinkedIn] would mean the world 🙏
+
+Thank you for trusting me with this project!
+
+Jowie Flores` },
+  'retainer-upsell': { title:'Retainer Upsell Message', desc:'Pitch monthly retainer after a successful project.', content:`Hi [Name],
+
+Glad everything is running smoothly!
+
+Now that the system is live, I wanted to mention my monthly retainer. For $[600]/month I handle:
+• Monitoring your workflows and fixing issues immediately
+• 2 new workflows per month as your needs grow
+• Priority support (response within a few hours)
+• Monthly check-in call to review performance
+
+Given that your system is now saving you [X hrs/week], this keeps it running at peak performance and lets you keep adding automation without starting from scratch.
+
+Want me to put together a quick 1-page retainer agreement?
+
+Jowie` },
+  'upwork-proposal': { title:'Upwork Job Proposal', desc:'Short, punchy Upwork proposal. Under 200 words. Stands out from generic bids.', content:`Hi [Client Name],
+
+I've read through your job post carefully — sounds like you need [1-sentence restatement of their problem in their words].
+
+I've built this exact type of system before. [1-sentence specific example: "I built an n8n lead qualification agent that saved a US marketing agency 18 hours/week and integrated directly with their HubSpot."]
+
+What I'll deliver:
+✅ [Specific deliverable 1]
+✅ [Specific deliverable 2]
+✅ Error handling, full documentation, and video walkthrough included
+
+My portfolio: freelancer-jowie.onrender.com — check Project [relevant number].
+
+I have availability to start [this week / Monday]. Happy to jump on a 15-min call first to confirm scope.
+
+Looking forward to it,
+Jowie Flores | AI Automation Specialist` },
+  'scope-creep': { title:'Scope Creep Response', desc:'When a client asks for "one small thing" outside the agreed scope.', content:`Hi [Name],
+
+Happy to add [requested feature/change]! Great idea.
+
+Quick note: this is outside the scope of our current agreement, so it would be an additional line item. Based on complexity, I'd estimate [X hours] at my standard rate of $[50/hr] — approximately $[amount].
+
+I can either:
+A) Add it to the current project for $[X] (invoice on delivery)
+B) Queue it for the next sprint / your retainer if you're on one
+
+Just let me know how you'd like to proceed!
+
+Jowie` },
+  'review-request': { title:'Review / Testimonial Request', desc:'Ask 2–3 days after project approval. Success rate is highest while the win is fresh.', content:`Hi [Name],
+
+Really glad the [Project Name] is up and running — it's been great working with you!
+
+If you're happy with the results, would you mind leaving a quick review on [Upwork / LinkedIn / Google]? It takes about 2 minutes and makes a huge difference for a freelancer like me.
+
+[Link here]
+
+If there's anything you wish was done differently, I'd rather hear it from you directly first — just reply and I'll make it right.
+
+Thank you again!
+
+Jowie Flores` },
+  'late-payment': { title:'Late Payment Reminder', desc:'Three versions: gentle, firm, and final. Use in order.', content:`=== VERSION 1: GENTLE (Day 7 past due) ===
+
+Hi [Name],
+
+Just a friendly reminder that invoice #[XXX] for $[amount] was due on [date]. Totally understand things get busy!
+
+Payment link: [LINK]
+
+Let me know if there's anything on my end. Thanks!
+Jowie
+
+---
+
+=== VERSION 2: FIRM (Day 14 past due) ===
+
+Hi [Name],
+
+Following up on invoice #[XXX] for $[amount], now 14 days overdue. Per our agreement, a 2% monthly late fee has been applied.
+
+Updated total: $[amount + fee]
+
+Please process payment at your earliest convenience.
+
+Jowie Flores
+
+---
+
+=== VERSION 3: FINAL (Day 30 past due) ===
+
+Dear [Name],
+
+This is a final notice for invoice #[XXX] ($[amount + fees]), now 30 days overdue. If payment is not received by [specific date 7 days out], I will need to pursue formal collection channels.
+
+I'd prefer to resolve this amicably. Please contact me immediately.
+
+Jowie Flores
+jowieflores.freelancer@gmail.com | 09394911140` },
+  'nda': { title:'NDA (Short Form)', desc:'One-page mutual NDA — send immediately when clients ask about data security.', content:`MUTUAL NON-DISCLOSURE AGREEMENT
+
+This NDA is entered into as of [DATE] between:
+
+PARTY A: Jowie Orlina Flores ("Contractor") · Naga, Bicol, Philippines
+PARTY B: [CLIENT NAME] ("Client") · [CLIENT ADDRESS]
+
+1. CONFIDENTIAL INFORMATION
+Each party may disclose confidential information including business processes, technical data, trade secrets, customer lists, financial data, and project specifications.
+
+2. OBLIGATIONS
+Each party agrees to: (a) hold all Confidential Information in strict confidence; (b) not disclose to any third party without prior written consent; (c) use only for the purpose of the project engagement.
+
+3. EXCLUSIONS
+These obligations do not apply to information that: (a) is publicly known; (b) was already known to the receiving party; (c) is required by law to be disclosed.
+
+4. TERM
+This agreement remains in effect for 2 years from the date signed.
+
+5. GOVERNING LAW
+This agreement is governed by the laws of the Republic of the Philippines.
+
+SIGNATURES:
+
+_________________________          _________________________
+Jowie Orlina Flores                [CLIENT NAME]
+Contractor                         Client
+Date: ___________________          Date: ___________________` }
+};
+
+function openTemplate(key) {
+  const t = templates[key];
+  if (!t) return;
+  document.getElementById('modal-title').textContent = t.title;
+  document.getElementById('modal-desc').textContent = t.desc;
+  document.getElementById('modal-content').value = t.content;
+  document.getElementById('template-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('modal-content').select(), 100);
+}
+
+// ─── COPY ───
+async function copyText(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast((label||'') + ' copied!');
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast((label||'') + ' copied!');
+  }
+}
+function copyModalContent() { copyText(document.getElementById('modal-content').value, 'Template'); }
+function copyProposal() { copyText(document.getElementById('proposal-preview').innerText, 'Proposal'); }
+function copyContract() { copyText(document.getElementById('contract-preview').innerText, 'Contract'); }
+
+// ─── TOAST ───
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════════
+// ─── BACKUP SYSTEM ───
+// ═══════════════════════════════════════════════════
+const BACKUP_KEYS = ['jof_clients', 'jof_income', 'jof_checklist'];
+
+function refreshBackupDisplay() {
+  const ts = localStorage.getItem('jof_backup_ts');
+  const dot = document.getElementById('backup-ts-dot');
+  const text = document.getElementById('backup-ts-text');
+  if (!dot || !text) return;
+  if (ts) {
+    dot.classList.add('safe');
+    text.textContent = '✓ ' + ts;
+    text.style.color = 'var(--teal)';
+  } else {
+    dot.classList.remove('safe');
+    text.textContent = 'Never backed up — export now!';
+    text.style.color = 'var(--amber)';
+  }
+}
+
+function exportBackup() {
+  // Bundle all data with metadata
+  const data = {
+    _meta: {
+      version: '2.2',
+      exported: new Date().toISOString(),
+      app: 'JOF.EXE',
+      note: 'Keep this file safe. Import it back anytime to restore all your data.'
+    }
+  };
+  BACKUP_KEYS.forEach(key => {
+    try {
+      data[key] = JSON.parse(localStorage.getItem(key) || 'null');
+    } catch(e) {
+      data[key] = null;
+    }
+  });
+
+  // Download as .json file
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateStr = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = 'jof-backup-' + dateStr + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // Save timestamp
+  const ts = new Date().toLocaleString('en-PH', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+  localStorage.setItem('jof_backup_ts', ts);
+  refreshBackupDisplay();
+  showToast('Backup saved! Keep that .json file safe 💾');
+}
+
+function triggerImport() {
+  document.getElementById('backup-file-input').click();
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      // Validate it's a real JOF backup
+      if (!data._meta || data._meta.app !== 'JOF.EXE') {
+        showToast('❌ Not a valid JOF.EXE backup!');
+        return;
+      }
+
+      const exportedDate = data._meta.exported
+        ? new Date(data._meta.exported).toLocaleDateString('en-PH', { month:'long', day:'numeric', year:'numeric' })
+        : 'unknown date';
+
+      const clientCount = Array.isArray(data.jof_clients) ? data.jof_clients.length : 0;
+      const incomeCount = Array.isArray(data.jof_income) ? data.jof_income.length : 0;
+
+      if (!confirm(
+        'Restore from backup?\n\n' +
+        'Backup date: ' + exportedDate + '\n' +
+        'Contains: ' + clientCount + ' clients, ' + incomeCount + ' income records\n\n' +
+        '⚠ This will replace your current data.'
+      )) return;
+
+      // Restore each key
+      BACKUP_KEYS.forEach(key => {
+        if (data[key] !== null && data[key] !== undefined) {
+          localStorage.setItem(key, JSON.stringify(data[key]));
+        }
+      });
+
+      // Reload live data
+      clients = JSON.parse(localStorage.getItem('jof_clients') || '[]');
+      incomes = JSON.parse(localStorage.getItem('jof_income') || '[]');
+
+      // Re-render everything
+      renderKanban();
+      renderChecklist();
+      renderIncome();
+      updateDashboard();
+
+      // Update backup timestamp to now
+      const ts = new Date().toLocaleString('en-PH', {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+      localStorage.setItem('jof_backup_ts', ts);
+      refreshBackupDisplay();
+
+      showToast('✅ Restored! ' + clientCount + ' clients, ' + incomeCount + ' payments loaded.');
+    } catch(err) {
+      showToast('❌ Could not read backup file!');
+      console.error('Import error:', err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // Reset so same file can be re-imported
+}
+
+function checkBackupNag() {
+  // Check if user has data but never backed up — show a nudge
+  const hasData = BACKUP_KEYS.some(k => {
+    try {
+      const d = JSON.parse(localStorage.getItem(k) || 'null');
+      if (!d) return false;
+      return Array.isArray(d) ? d.length > 0 : Object.keys(d).length > 0;
+    } catch(e) { return false; }
+  });
+  const hasBacked = !!localStorage.getItem('jof_backup_ts');
+  if (hasData && !hasBacked) {
+    setTimeout(() => showToast('💡 You have data! Export a backup to keep it safe.'), 3500);
+  }
+  refreshBackupDisplay();
+}
+
+// ─── INIT ───
+const today = new Date().toISOString().split('T')[0];
+['p-date','c-date','c-start'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=today; });
+currentCurrency = 'PHP';
+document.querySelectorAll('.currency-btn').forEach(btn => {
+  btn.classList.remove('active');
+  if(btn.textContent.includes('PHP')) btn.classList.add('active');
+});
+renderKanban();
+renderChecklist();
+renderIncome();
+buildProposal();
+buildContract();
+calcRate();
+updateDashboard();
+checkBackupNag();
+</script>
+</body>
+</html>
