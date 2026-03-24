@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start a Project — JOF.EXE | Jowie Flores · AI Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+/* ══ RESET ══ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #050810;
+  --bg2:      #080d1a;
+  --bg3:      #0d1426;
+  --surface:  #111827;
+  --surface2: #1a2235;
+  --border:   rgba(255,255,255,.07);
+  --border2:  rgba(255,255,255,.13);
+  --border-active: rgba(0,255,136,.4);
+  --ink:      #f0f4ff;
+  --ink2:     #a8b8d8;
+  --ink3:     #637394;
+  --green:    #00ff88;
+  --green2:   #00d470;
+  --green-dim: rgba(0,255,136,.08);
+  --green-glow: rgba(0,255,136,.15);
+  --blue:     #3b82f6;
+  --blue-dim: rgba(59,130,246,.1);
+  --teal:     #00d4aa;
+  --amber:    #f59e0b;
+  --red:      #ef4444;
+  --mono:     'JetBrains Mono', monospace;
+  --display:  'Syne', system-ui, sans-serif;
+  --body:     'Inter', system-ui, sans-serif;
+  --r:        8px;
+  --r-lg:     14px;
+  --r-xl:     20px;
+  --glow: 0 0 40px rgba(0,255,136,.12);
+  --glow-sm: 0 0 15px rgba(0,255,136,.1);
+}
+
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ══ SCANLINE OVERLAY ══ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.03) 2px,
+    rgba(0,0,0,.03) 4px
+  );
+  pointer-events: none; z-index: 0;
+}
+
+/* ══ GRID BG ══ */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,136,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,136,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ══ HEADER ══ */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(5,8,16,.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 clamp(16px, 5vw, 60px);
+}
+.header-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 36px; height: 36px;
+  background: var(--green);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bg);
+  letter-spacing: -.5px;
+  box-shadow: 0 0 16px rgba(0,255,136,.4);
+}
+.logo-name { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--ink); }
+.logo-sub { font-family: var(--mono); font-size: 9px; color: var(--green); letter-spacing: .12em; display: block; line-height: 1; margin-top: 2px; }
+.header-status {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  border: 1px solid rgba(0,255,136,.25);
+  border-radius: 20px;
+  padding: 5px 12px;
+  background: var(--green-dim);
+}
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: blink 1.6s infinite;
+  box-shadow: 0 0 6px var(--green);
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ══ HERO ══ */
+.hero {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: clamp(40px, 8vw, 80px) clamp(16px, 5vw, 60px) 48px;
+  position: relative;
+}
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.hero-tag::before { content: '// '; color: var(--ink3); }
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(34px, 6vw, 60px);
+  font-weight: 800;
+  line-height: 1.06;
+  color: var(--ink);
+  margin-bottom: 18px;
+  letter-spacing: -.5px;
+}
+.hero h1 .accent {
+  color: var(--green);
+  text-shadow: 0 0 30px rgba(0,255,136,.4);
+}
+.hero-desc {
+  font-size: 15px;
+  color: var(--ink2);
+  max-width: 520px;
+  line-height: 1.75;
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+.hero-metrics {
+  display: flex; flex-wrap: wrap; gap: 24px;
+  margin-bottom: 0;
+}
+.metric {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink3);
+}
+.metric span {
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* ══ MAIN LAYOUT ══ */
+.main-wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 5vw, 60px) 100px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ══ PROGRESS ══ */
+.progress-wrap {
+  margin-bottom: 32px;
+}
+.progress-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.progress-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.progress-pct {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+}
+.progress-bar-bg {
+  height: 2px;
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  border-radius: 2px;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 10px var(--green);
+}
+.progress-steps {
+  display: flex; gap: 4px;
+}
+.prog-step {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  cursor: default;
+}
+.prog-step.clickable { cursor: pointer; }
+.prog-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink3);
+  transition: all .25s;
+  position: relative;
+}
+.prog-step.active .prog-dot {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg);
+  box-shadow: 0 0 16px rgba(0,255,136,.5);
+}
+.prog-step.done .prog-dot {
+  background: var(--surface2);
+  border-color: var(--green);
+  color: var(--green);
+}
+.prog-step.done .prog-dot::after {
+  content: '✓';
+  font-size: 11px;
+}
+.prog-step.done .prog-dot span { display: none; }
+.prog-lbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--ink3);
+  white-space: nowrap;
+  letter-spacing: .04em;
+  transition: color .2s;
+  text-align: center;
+}
+.prog-step.active .prog-lbl { color: var(--green); }
+.prog-step.done .prog-lbl { color: var(--ink3); }
+
+/* ══ GRID LAYOUT ══ */
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 270px;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* ══ FORM CARD ══ */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  position: relative;
+  animation: fadeUp .35s ease;
+}
+.form-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  opacity: .6;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.step { display: none; }
+.step.active { display: block; animation: fadeUp .25s ease; }
+
+.card-header {
+  padding: 28px 32px 22px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--surface), var(--bg3));
+}
+.step-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: .1em;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.step-tag::before { content: '//'; color: var(--ink3); }
+.card-header h2 {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.card-header p { font-size: 13px; color: var(--ink3); font-weight: 300; }
+
+.card-body { padding: 28px 32px; }
+
+/* ══ FIELDS ══ */
+.field { margin-bottom: 20px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+
+label.lbl {
+  display: flex; align-items: center; gap: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 8px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+label.lbl .req { color: var(--green); }
+.hint { font-family: var(--mono); font-size: 10px; color: var(--ink3); margin-top: 5px; }
+
+input[type=text], input[type=email], input[type=url], input[type=tel],
+input[type=number], textarea, select {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-family: var(--body);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(0,255,136,.08), var(--glow-sm);
+  background: rgba(0,255,136,.02);
+}
+input::placeholder, textarea::placeholder { color: var(--ink3); font-size: 13px; }
+textarea { resize: vertical; min-height: 96px; line-height: 1.65; }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff88' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+  cursor: pointer;
+}
+select option { background: #0d1426; color: var(--ink); }
+
+.field-footer { display: flex; justify-content: flex-end; margin-top: 4px; }
+.char-count { font-family: var(--mono); font-size: 10px; color: var(--ink3); }
+
+/* ══ MULTI-SELECT CARDS ══ */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.sel-card {
+  padding: 14px 15px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  transition: all .18s;
+  position: relative;
+  user-select: none;
+}
+.sel-card:hover { border-color: rgba(0,255,136,.3); background: var(--green-dim); }
+.sel-card.selected {
+  border-color: var(--green);
+  background: var(--green-dim);
+  box-shadow: inset 0 0 0 1px rgba(0,255,136,.2);
+}
+.sel-card.selected::after {
+  content: '✓';
+  position: absolute; top: 8px; right: 10px;
+  width: 17px; height: 17px;
+  background: var(--green);
+  color: var(--bg);
+  border-radius: 50%;
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 17px; text-align: center;
+}
+.sc-icon { font-size: 18px; margin-bottom: 6px; }
+.sc-title { font-family: var(--display); font-size: 13px; font-weight: 600; color: var(--ink); }
+.sc-desc { font-size: 11px; color: var(--ink3); margin-top: 2px; line-height: 1.4; }
+
+/* ══ CHIP SELECTOR ══ */
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip {
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg3);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+}
+.chip:hover { border-color: rgba(0,255,136,.4); color: var(--green); background: var(--green-dim); }
+.chip.selected {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--green-dim);
+  box-shadow: 0 0 8px rgba(0,255,136,.12);
+}
+
+/* ══ PAIN LIST ══ */
+.pain-list { display: flex; flex-direction: column; gap: 7px; }
+.pain-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all .16s;
+  user-select: none;
+}
+.pain-item:hover { border-color: rgba(0,255,136,.3); background: var(--green-dim); }
+.pain-item.selected { border-color: var(--green); background: var(--green-dim); }
+.pain-check {
+  width: 17px; height: 17px;
+  border: 1.5px solid var(--border2);
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .16s;
+  font-size: 9px; color: transparent;
+}
+.pain-item.selected .pain-check { background: var(--green); border-color: var(--green); color: var(--bg); }
+.pain-emoji { font-size: 16px; flex-shrink: 0; }
+.pain-text { font-size: 13px; color: var(--ink2); }
+
+/* ══ BUDGET ══ */
+.budget-display {
+  text-align: center;
+  padding: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 16px;
+}
+.budget-val {
+  font-family: var(--display);
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--green);
+  letter-spacing: -2px;
+  text-shadow: 0 0 30px rgba(0,255,136,.4);
+}
+.budget-val sup { font-size: 20px; letter-spacing: 0; vertical-align: super; }
+.budget-note { font-family: var(--mono); font-size: 11px; color: var(--ink3); margin-top: 4px; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface2);
+  outline: none;
+  border: none; box-shadow: none; padding: 0;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--green);
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(0,255,136,.5);
+  border: 2px solid var(--bg);
+  transition: transform .15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.budget-range-labels {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 10px; color: var(--ink3); margin-top: 6px;
+}
+
+/* ══ URGENCY ══ */
+.urgency-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.urg-card {
+  padding: 14px 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  text-align: center;
+  transition: all .18s;
+  user-select: none;
+}
+.urg-card:hover { border-color: rgba(241,159,11,.4); background: rgba(245,158,11,.06); }
+.urg-card.selected { border-color: var(--amber); background: rgba(245,158,11,.08); box-shadow: 0 0 10px rgba(245,158,11,.15); }
+.urg-icon { font-size: 20px; margin-bottom: 5px; }
+.urg-label { font-family: var(--display); font-size: 12px; font-weight: 700; color: var(--ink); }
+.urg-time { font-family: var(--mono); font-size: 10px; color: var(--ink3); margin-top: 2px; }
+
+/* ══ SECTION DIVIDER ══ */
+.sec-div {
+  display: flex; align-items: center; gap: 12px;
+  margin: 24px 0 20px;
+  font-family: var(--mono); font-size: 10px; color: var(--ink3);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.sec-div::before, .sec-div::after {
+  content: ''; flex: 1; height: 1px;
+  background: var(--border);
+}
+
+/* ══ TOOL CATEGORIES ══ */
+.tool-categories { display: flex; flex-direction: column; gap: 16px; }
+.tool-cat-label {
+  font-family: var(--mono); font-size: 10px; color: var(--ink3);
+  letter-spacing: .1em; text-transform: uppercase; margin-bottom: 7px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tool-cat-label::before { content: '>'; color: var(--green); }
+
+/* ══ NAV ══ */
+.card-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 32px 24px;
+  border-top: 1px solid var(--border);
+  background: rgba(0,0,0,.2);
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 11px 22px;
+  border-radius: var(--r);
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: all .18s;
+  text-decoration: none; letter-spacing: .02em;
+}
+.btn-back {
+  background: transparent;
+  color: var(--ink3);
+  border: 1px solid var(--border);
+}
+.btn-back:hover { color: var(--ink); border-color: var(--border2); background: var(--surface2); }
+.btn-next {
+  background: var(--green);
+  color: var(--bg);
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(0,255,136,.25);
+}
+.btn-next:hover { background: var(--green2); transform: translateY(-1px); box-shadow: 0 0 30px rgba(0,255,136,.4); }
+.btn-submit {
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  color: var(--bg);
+  font-weight: 700;
+  padding: 13px 30px;
+  font-size: 14px;
+  border-radius: var(--r-lg);
+  box-shadow: 0 0 30px rgba(0,255,136,.3);
+}
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(0,255,136,.5); }
+.btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ══ VALIDATION ══ */
+.field-error { font-family: var(--mono); font-size: 10px; color: var(--red); margin-top: 5px; display: none; letter-spacing: .04em; }
+.field-error.show { display: block; }
+input.error, textarea.error, select.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+
+/* ══ SUMMARY ══ */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.summary-block {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+}
+.summary-block h4 {
+  font-family: var(--mono); font-size: 9px; color: var(--green);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 5px;
+}
+.summary-block h4::before { content: '//'; color: var(--ink3); }
+.summary-block p { font-size: 13px; color: var(--ink2); line-height: 1.6; }
+.sum-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.sum-chip {
+  padding: 3px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-family: var(--mono); font-size: 10px; color: var(--ink2);
+}
+
+/* ══ NEXT-STEPS BOX ══ */
+.next-steps-box {
+  background: rgba(0,255,136,.04);
+  border: 1px solid rgba(0,255,136,.2);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  margin-top: 20px;
+}
+.nsb-title { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
+.nsb-body { font-size: 13px; color: var(--ink2); line-height: 1.8; }
+.nsb-body strong { color: var(--ink); }
+
+/* ══ ASIDE ══ */
+.aside {
+  position: sticky;
+  top: 78px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.aside-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.aside-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  opacity: .4;
+}
+.aside-card h3 {
+  font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--ink);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 7px;
+}
+.aside-card h3::before { content: '//'; font-family: var(--mono); font-size: 10px; color: var(--green); font-weight: 400; }
+.aside-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: var(--ink2);
+  line-height: 1.5;
+}
+.ai-icon {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  background: var(--green-dim);
+  border: 1px solid rgba(0,255,136,.2);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.ai-title { font-family: var(--display); font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 2px; display: block; }
+.aside-div { height: 1px; background: var(--border); margin: 16px 0; }
+.profile-row { display: flex; align-items: center; gap: 10px; }
+.profile-av {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--bg);
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(0,255,136,.3);
+}
+.profile-name { font-family: var(--display); font-size: 13px; font-weight: 700; color: var(--ink); }
+.profile-loc { font-family: var(--mono); font-size: 10px; color: var(--ink3); margin-top: 1px; }
+
+/* ══ SUCCESS ══ */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 60px 40px;
+  animation: fadeUp .4s ease;
+}
+.success-screen.visible { display: block; }
+.success-icon {
+  width: 70px; height: 70px;
+  background: var(--green-dim);
+  border: 2px solid rgba(0,255,136,.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  margin: 0 auto 24px;
+  box-shadow: 0 0 30px rgba(0,255,136,.25);
+}
+.success-screen h2 {
+  font-family: var(--display);
+  font-size: 30px; font-weight: 800;
+  color: var(--ink); margin-bottom: 10px;
+}
+.success-screen h2 span { color: var(--green); }
+.success-screen p { font-size: 14px; color: var(--ink2); max-width: 440px; margin: 0 auto 24px; line-height: 1.7; font-weight: 300; }
+.success-links {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  max-width: 380px;
+  margin: 0 auto 24px;
+  text-align: left;
+}
+.sl-label { font-family: var(--mono); font-size: 9px; color: var(--green); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+.sl-link { display: block; font-size: 13px; color: var(--ink2); text-decoration: none; line-height: 1.9; }
+.sl-link:hover { color: var(--green); }
+.sl-link a { color: var(--green); text-decoration: none; font-weight: 500; }
+.ref-id { font-family: var(--mono); font-size: 11px; color: var(--ink3); margin-top: 10px; }
+.ref-id strong { color: var(--green); }
+
+/* ══ TOAST ══ */
+#toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--ink);
+  font-family: var(--mono); font-size: 12px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  z-index: 9999;
+  opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.error { border-color: rgba(239,68,68,.4); color: var(--red); }
+#toast.success-t { border-color: rgba(0,255,136,.4); color: var(--green); }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 760px) {
+  .layout-grid { grid-template-columns: 1fr; }
+  .aside { display: none; }
+  .card-body { padding: 22px 18px; }
+  .card-header { padding: 22px 18px 18px; }
+  .card-nav { padding: 14px 18px 20px; }
+  .field-row, .field-row-3, .card-grid, .card-grid-3, .urgency-grid { grid-template-columns: 1fr 1fr; }
+  .summary-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 28px; }
+  .prog-lbl { font-size: 8px; }
+}
+@media (max-width: 480px) {
+  .card-grid, .urgency-grid { grid-template-columns: 1fr 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── FALLBACK MODAL ── */
+.fallback-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(5,8,16,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  align-items: center; justify-content: center;
+}
+.fallback-overlay.visible { display: flex; animation: fadeUp .3s ease; }
+.fallback-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 36px 32px;
+  max-width: 480px; width: 92%;
+  text-align: center;
+  position: relative;
+}
+.fallback-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+}
+.fallback-icon { font-size: 38px; margin-bottom: 16px; }
+.fallback-box h3 {
+  font-family: var(--display); font-size: 20px; font-weight: 700;
+  color: var(--ink); margin-bottom: 10px;
+}
+.fallback-box p { font-size: 13px; color: var(--ink2); line-height: 1.7; margin-bottom: 24px; }
+.fallback-box p strong { color: var(--amber); }
+.fallback-actions { display: flex; flex-direction: column; gap: 10px; }
+.btn-gmail {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 14px 24px;
+  background: #EA4335;
+  color: white;
+  border: none; border-radius: var(--r-lg);
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .18s;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(234,67,53,.3);
+}
+.btn-gmail:hover { background: #c5352a; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(234,67,53,.45); }
+.btn-gmail-icon { font-size: 18px; }
+.fallback-note {
+  font-family: var(--mono); font-size: 10px; color: var(--ink3);
+  margin-top: 14px; line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="https://freelancer-jowie.vercel.app/" class="logo" target="_blank">
+      <div class="logo-mark">JOF</div>
+      <div>
+        <div class="logo-name">Jowie Flores</div>
+        <span class="logo-sub">// AI AUTOMATION ARCHITECT</span>
+      </div>
+    </a>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      TAKING NEW PROJECTS
+    </div>
+  </div>
+</header>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-tag">START A PROJECT</div>
+  <h1>Let's automate<br>what's <span class="accent">slowing you down</span></h1>
+  <p class="hero-desc">Fill out this brief and I'll come back within 24 hours with a clear plan, fixed price, and exact timeline. No bloated agency quotes. No surprises.</p>
+  <div class="hero-metrics">
+    <div class="metric"><span>✓</span> Response in 24 hrs</div>
+    <div class="metric"><span>✓</span> Free discovery call</div>
+    <div class="metric"><span>✓</span> Fixed-price projects</div>
+    <div class="metric"><span>✓</span> NDA available</div>
+    <div class="metric"><span>✓</span> Docs & walkthroughs included</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main-wrap">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <div class="progress-label">Project Brief — <span id="step-label-text">About You</span></div>
+      <div class="progress-pct" id="prog-pct">17%</div>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="prog-fill" style="width:17%"></div>
+    </div>
+    <div class="progress-steps" id="progress-steps">
+      <div class="prog-step active" data-step="1">
+        <div class="prog-dot"><span>1</span></div>
+        <div class="prog-lbl">You</div>
+      </div>
+      <div class="prog-step" data-step="2">
+        <div class="prog-dot"><span>2</span></div>
+        <div class="prog-lbl">Project</div>
+      </div>
+      <div class="prog-step" data-step="3">
+        <div class="prog-dot"><span>3</span></div>
+        <div class="prog-lbl">Pains</div>
+      </div>
+      <div class="prog-step" data-step="4">
+        <div class="prog-dot"><span>4</span></div>
+        <div class="prog-lbl">Stack</div>
+      </div>
+      <div class="prog-step" data-step="5">
+        <div class="prog-dot"><span>5</span></div>
+        <div class="prog-lbl">Budget</div>
+      </div>
+      <div class="prog-step" data-step="6">
+        <div class="prog-dot"><span>6</span></div>
+        <div class="prog-lbl">Review</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-grid">
+
+    <!-- ══ FORM CARD ══ -->
+    <div class="form-card" id="form-card">
+
+      <!-- STEP 1: ABOUT YOU -->
+      <div class="step active" id="step-1">
+        <div class="card-header">
+          <div class="step-tag">Step 01 of 06</div>
+          <h2>Let's start with you</h2>
+          <p>Who am I building for? Tell me a little about yourself and your business.</p>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">First Name <span class="req">*</span></label>
+              <input type="text" id="f-fname" placeholder="Alex" oninput="save('fname',this.value)">
+              <div class="field-error" id="e-fname">// required field</div>
+            </div>
+            <div class="field">
+              <label class="lbl">Last Name <span class="req">*</span></label>
+              <input type="text" id="f-lname" placeholder="Johnson" oninput="save('lname',this.value)">
+              <div class="field-error" id="e-lname">// required field</div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">Work Email <span class="req">*</span></label>
+            <input type="email" id="f-email" placeholder="alex@company.com" oninput="save('email',this.value)">
+            <div class="field-error" id="e-email">// valid email required</div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">Company / Business</label>
+              <input type="text" id="f-company" placeholder="Acme Inc." oninput="save('company',this.value)">
+            </div>
+            <div class="field">
+              <label class="lbl">Your Role / Title</label>
+              <input type="text" id="f-role" placeholder="Operations Manager" oninput="save('role',this.value)">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">Country</label>
+              <select id="f-country" onchange="save('country',this.value)">
+                <option value="">Select country…</option>
+                <option>🇺🇸 United States</option>
+                <option>🇦🇺 Australia</option>
+                <option>🇬🇧 United Kingdom</option>
+                <option>🇨🇦 Canada</option>
+                <option>🇩🇪 Germany</option>
+                <option>🇸🇬 Singapore</option>
+                <option>🇵🇭 Philippines</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="lbl">Company Website</label>
+              <input type="url" id="f-website" placeholder="https://yourcompany.com" oninput="save('website',this.value)">
+            </div>
+          </div>
+          <div class="field">
+            <label class="lbl">How did you find me?</label>
+            <select id="f-source" onchange="save('source',this.value)">
+              <option value="">Select one…</option>
+              <option>Upwork</option>
+              <option>LinkedIn</option>
+              <option>Portfolio website</option>
+              <option>Referral from someone</option>
+              <option>Facebook / Social media</option>
+              <option>Google search</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-nav">
+          <div></div>
+          <button class="btn btn-next" onclick="nextStep(1)">Next: Project Type →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: PROJECT TYPE -->
+      <div class="step" id="step-2">
+        <div class="card-header">
+          <div class="step-tag">Step 02 of 06</div>
+          <h2>What do you need built?</h2>
+          <p>Select all that apply — most projects combine 2–3 of these.</p>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label class="lbl">Project Category <span class="req">*</span></label>
+            <div class="card-grid" id="project-types">
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="Workflow Automation">
+                <div class="sc-icon">⚙️</div>
+                <div class="sc-title">Workflow Automation</div>
+                <div class="sc-desc">n8n, Make, Zapier — automate repetitive manual processes</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="AI Agent / Chatbot">
+                <div class="sc-icon">🤖</div>
+                <div class="sc-title">AI Agent / Chatbot</div>
+                <div class="sc-desc">GPT-4, Gemini — agents that think, qualify, respond</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="CRM Automation">
+                <div class="sc-icon">📊</div>
+                <div class="sc-title">CRM Automation</div>
+                <div class="sc-desc">HubSpot, GoHighLevel — auto-sync & intelligent follow-up</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="AI Knowledge Base (RAG)">
+                <div class="sc-icon">🧠</div>
+                <div class="sc-title">AI Knowledge Base</div>
+                <div class="sc-desc">RAG systems trained on your docs, FAQs, and data</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="Lead Generation System">
+                <div class="sc-icon">🎯</div>
+                <div class="sc-title">Lead Generation</div>
+                <div class="sc-desc">Capture, qualify, score and route leads automatically</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="Content Automation">
+                <div class="sc-icon">✍️</div>
+                <div class="sc-title">Content Automation</div>
+                <div class="sc-desc">Repurpose, schedule, and distribute content at scale</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="Data Pipeline / Sync">
+                <div class="sc-icon">🔄</div>
+                <div class="sc-title">Data Pipeline / Sync</div>
+                <div class="sc-desc">Connect databases, APIs, and spreadsheets automatically</div>
+              </div>
+              <div class="sel-card" onclick="toggleCard(this,'ptype')" data-val="Custom Web Application">
+                <div class="sc-icon">🌐</div>
+                <div class="sc-title">Custom Web App</div>
+                <div class="sc-desc">React / Node.js — custom tools and internal dashboards</div>
+              </div>
+            </div>
+            <div class="field-error" id="e-ptype" style="margin-top:8px">// select at least one project type</div>
+          </div>
+          <div class="field" style="margin-top:20px">
+            <label class="lbl">Project Working Title</label>
+            <input type="text" id="f-ptitle" placeholder="e.g. AI Lead Qualification System" oninput="save('ptitle',this.value)">
+            <div class="hint">// optional — describe it in your own words if no title yet</div>
+          </div>
+          <div class="field">
+            <label class="lbl">What outcome do you want? <span class="req">*</span></label>
+            <textarea id="f-outcome" rows="3" placeholder="e.g. I want leads from our website form to automatically enter the CRM, get scored, and trigger a follow-up sequence without anyone lifting a finger..." oninput="save('outcome',this.value);cc('outcome',this.value,500)" maxlength="500"></textarea>
+            <div class="field-footer"><span class="char-count" id="cc-outcome">0 / 500</span></div>
+            <div class="field-error" id="e-outcome">// describe your desired outcome</div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="btn btn-back" onclick="prevStep(2)">← Back</button>
+          <button class="btn btn-next" onclick="nextStep(2)">Next: Pain Points →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: PAIN POINTS -->
+      <div class="step" id="step-3">
+        <div class="card-header">
+          <div class="step-tag">Step 03 of 06</div>
+          <h2>What's costing you the most?</h2>
+          <p>Be honest here — the sharper your pain, the sharper my solution.</p>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label class="lbl">Current Pain Points <span class="req">*</span></label>
+            <div class="pain-list" id="pain-list">
+              <div class="pain-item" onclick="togglePain(this)" data-val="Manual data entry — copy/pasting between tools all day">
+                <div class="pain-emoji">🖐️</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Manual data entry — copy/pasting between tools all day</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Leads falling through the cracks — no consistent follow-up">
+                <div class="pain-emoji">🕳️</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Leads falling through the cracks — no consistent follow-up</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Slow response times to customers or leads">
+                <div class="pain-emoji">⏱️</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Slow response times to customers or leads</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="CRM never up to date — team forgets to log activity">
+                <div class="pain-emoji">📋</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">CRM never up to date — team forgets to log activity</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="No automated reporting — building dashboards manually">
+                <div class="pain-emoji">📊</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">No automated reporting — building dashboards manually</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Content creation is a bottleneck — not enough being published">
+                <div class="pain-emoji">🗂️</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Content creation is a bottleneck — not enough being published</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Support team overloaded with repetitive questions">
+                <div class="pain-emoji">💬</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Support team overloaded with repetitive questions</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Tools don't talk to each other — constant switching">
+                <div class="pain-emoji">🔌</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Tools don't talk to each other — constant switching</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Client or employee onboarding is fully manual">
+                <div class="pain-emoji">🤝</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Client / employee onboarding is fully manual</div>
+              </div>
+              <div class="pain-item" onclick="togglePain(this)" data-val="Other — described below">
+                <div class="pain-emoji">➕</div>
+                <div class="pain-check">✓</div>
+                <div class="pain-text">Other — I'll describe below</div>
+              </div>
+            </div>
+            <div class="field-error" id="e-pain" style="margin-top:8px">// select at least one pain point</div>
+          </div>
+          <div class="field" style="margin-top:18px">
+            <label class="lbl">Hours lost per week to this problem?</label>
+            <select id="f-hrs" onchange="save('hrs',this.value)">
+              <option value="">Select an estimate…</option>
+              <option value="1–3 hours / week">1–3 hours / week</option>
+              <option value="4–8 hours / week">4–8 hours / week</option>
+              <option value="9–20 hours / week">9–20 hours / week</option>
+              <option value="20+ hours / week (significant)">20+ hours / week — this is serious</option>
+              <option value="Not sure">Not sure yet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl">Walk me through the problem</label>
+            <textarea id="f-problem" placeholder="Describe your current process step by step. What happens, who does it, where does it break? The more detail, the more precise my solution." oninput="save('problem',this.value);cc('problem',this.value,800)" maxlength="800"></textarea>
+            <div class="field-footer"><span class="char-count" id="cc-problem">0 / 800</span></div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="btn btn-back" onclick="prevStep(3)">← Back</button>
+          <button class="btn btn-next" onclick="nextStep(3)">Next: Your Stack →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: TECH STACK -->
+      <div class="step" id="step-4">
+        <div class="card-header">
+          <div class="step-tag">Step 04 of 06</div>
+          <h2>What tools are you using?</h2>
+          <p>I'll build around your existing stack — no ripping things out unless necessary.</p>
+        </div>
+        <div class="card-body">
+          <div class="tool-categories">
+            <div>
+              <div class="tool-cat-label">CRM / Sales</div>
+              <div class="chip-group">
+                <div class="chip" onclick="toggleTool(this)" data-val="HubSpot">HubSpot</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="GoHighLevel">GoHighLevel</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Salesforce">Salesforce</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Pipedrive">Pipedrive</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Zoho CRM">Zoho CRM</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Close.io">Close.io</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Monday CRM">Monday CRM</div>
+              </div>
+            </div>
+            <div>
+              <div class="tool-cat-label">Automation Platforms</div>
+              <div class="chip-group">
+                <div class="chip" onclick="toggleTool(this)" data-val="n8n">n8n</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Make.com">Make.com</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Zapier">Zapier</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Activepieces">Activepieces</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="None yet">None yet</div>
+              </div>
+            </div>
+            <div>
+              <div class="tool-cat-label">Communication</div>
+              <div class="chip-group">
+                <div class="chip" onclick="toggleTool(this)" data-val="Slack">Slack</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Microsoft Teams">Microsoft Teams</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Discord">Discord</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Gmail">Gmail</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Outlook">Outlook</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Intercom">Intercom</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="WhatsApp Business">WhatsApp Business</div>
+              </div>
+            </div>
+            <div>
+              <div class="tool-cat-label">Data & Storage</div>
+              <div class="chip-group">
+                <div class="chip" onclick="toggleTool(this)" data-val="Airtable">Airtable</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Google Sheets">Google Sheets</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Notion">Notion</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Supabase">Supabase</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="PostgreSQL">PostgreSQL</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="MongoDB">MongoDB</div>
+              </div>
+            </div>
+            <div>
+              <div class="tool-cat-label">AI & LLMs</div>
+              <div class="chip-group">
+                <div class="chip" onclick="toggleTool(this)" data-val="OpenAI / GPT-4">OpenAI / GPT-4</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Google Gemini">Google Gemini</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Claude (Anthropic)">Claude (Anthropic)</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Groq / Llama">Groq / Llama</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Not using AI yet">Not using AI yet</div>
+              </div>
+            </div>
+            <div>
+              <div class="tool-cat-label">Project Management</div>
+              <div class="chip-group">
+                <div class="chip" onclick="toggleTool(this)" data-val="Asana">Asana</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Jira">Jira</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Trello">Trello</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="ClickUp">ClickUp</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Monday.com">Monday.com</div>
+                <div class="chip" onclick="toggleTool(this)" data-val="Linear">Linear</div>
+              </div>
+            </div>
+            <div>
+              <div class="tool-cat-label">Other / Custom</div>
+              <input type="text" id="f-custom-tools" placeholder="e.g. Shopify, custom Python scripts, our own internal CRM…" oninput="save('customTools',this.value)" style="margin-top:4px">
+              <div class="hint">// list tools not found above</div>
+            </div>
+          </div>
+
+          <div class="sec-div">Automation Experience</div>
+          <div class="field">
+            <label class="lbl">Have you tried automating this before?</label>
+            <div class="card-grid-3">
+              <div class="sel-card" onclick="selectOne(this,'auto-experience')" data-val="Yes — partial (some automations exist but broken/incomplete)">
+                <div class="sc-icon">🔧</div>
+                <div class="sc-title">Yes — partial</div>
+                <div class="sc-desc">Some automations exist but broken or incomplete</div>
+              </div>
+              <div class="sel-card" onclick="selectOne(this,'auto-experience')" data-val="No — fresh start (all manual right now)">
+                <div class="sc-icon">🌱</div>
+                <div class="sc-title">Fresh start</div>
+                <div class="sc-desc">Starting from zero, everything manual</div>
+              </div>
+              <div class="sel-card" onclick="selectOne(this,'auto-experience')" data-val="Replacing something (existing system needs rebuild)">
+                <div class="sc-icon">♻️</div>
+                <div class="sc-title">Replacing system</div>
+                <div class="sc-desc">Existing setup needs a rebuild or improvement</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="btn btn-back" onclick="prevStep(4)">← Back</button>
+          <button class="btn btn-next" onclick="nextStep(4)">Next: Budget & Timeline →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: BUDGET & TIMELINE -->
+      <div class="step" id="step-5">
+        <div class="card-header">
+          <div class="step-tag">Step 05 of 06</div>
+          <h2>Budget &amp; timeline</h2>
+          <p>Be direct — it helps me right-size the solution, not oversell you.</p>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label class="lbl">Project Budget (USD) <span class="req">*</span></label>
+            <div class="budget-display">
+              <div class="budget-val" id="budget-val"><sup>$</sup><span id="budget-num">1,500</span></div>
+              <div class="budget-note" id="budget-note">Standard project with AI integration</div>
+            </div>
+            <input type="range" id="f-budget" min="0" max="10" step="1" value="4" oninput="updateBudget(this.value)">
+            <div class="budget-range-labels">
+              <span>$500</span><span>$1k</span><span>$2k</span><span>$3k</span><span>$5k+</span>
+            </div>
+            <div class="hint" style="margin-top:8px">// typical projects range $500–$5,000. Not sure? Let's talk first.</div>
+          </div>
+
+          <div class="field" style="margin-top:26px">
+            <label class="lbl">When do you need this live? <span class="req">*</span></label>
+            <div class="urgency-grid" id="urgency-grid">
+              <div class="urg-card" onclick="selectUrgency(this)" data-val="ASAP (under 5 days)">
+                <div class="urg-icon">🔥</div>
+                <div class="urg-label">ASAP</div>
+                <div class="urg-time">Under 5 days</div>
+              </div>
+              <div class="urg-card" onclick="selectUrgency(this)" data-val="2 Weeks (standard pace)">
+                <div class="urg-icon">⚡</div>
+                <div class="urg-label">2 Weeks</div>
+                <div class="urg-time">Standard pace</div>
+              </div>
+              <div class="urg-card" onclick="selectUrgency(this)" data-val="1 Month (relaxed pace)">
+                <div class="urg-icon">📅</div>
+                <div class="urg-label">1 Month</div>
+                <div class="urg-time">Relaxed pace</div>
+              </div>
+              <div class="urg-card" onclick="selectUrgency(this)" data-val="Flexible (no hard deadline)">
+                <div class="urg-icon">🌊</div>
+                <div class="urg-label">Flexible</div>
+                <div class="urg-time">No hard deadline</div>
+              </div>
+            </div>
+            <div class="field-error" id="e-urgency" style="margin-top:8px">// select a timeline</div>
+          </div>
+
+          <div class="sec-div">Engagement Type</div>
+          <div class="field">
+            <label class="lbl">What kind of engagement?</label>
+            <div class="card-grid">
+              <div class="sel-card" onclick="selectOne(this,'engagement')" data-val="One-time project (build, hand off, done)">
+                <div class="sc-icon">🎯</div>
+                <div class="sc-title">One-time project</div>
+                <div class="sc-desc">Build it, hand it over, done</div>
+              </div>
+              <div class="sel-card" onclick="selectOne(this,'engagement')" data-val="Ongoing retainer (monthly maintenance + improvements)">
+                <div class="sc-icon">🔁</div>
+                <div class="sc-title">Ongoing retainer</div>
+                <div class="sc-desc">Monthly — maintain, improve, add workflows</div>
+              </div>
+              <div class="sel-card" onclick="selectOne(this,'engagement')" data-val="Project then retainer (build first, support ongoing)">
+                <div class="sc-icon">🚀</div>
+                <div class="sc-title">Project → Retainer</div>
+                <div class="sc-desc">Build first, then move to monthly support</div>
+              </div>
+              <div class="sel-card" onclick="selectOne(this,'engagement')" data-val="Discovery first (paid audit before full build)">
+                <div class="sc-icon">🔍</div>
+                <div class="sc-title">Discovery first</div>
+                <div class="sc-desc">Paid audit before committing to the full build</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="lbl">Anything else I should know before our call?</label>
+            <textarea id="f-notes" placeholder="Deadlines, team size, stakeholder constraints, failed past attempts, NDA requirements, specific integrations, key concerns…" oninput="save('notes',this.value);cc('notes',this.value,600)" maxlength="600"></textarea>
+            <div class="field-footer"><span class="char-count" id="cc-notes">0 / 600</span></div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="btn btn-back" onclick="prevStep(5)">← Back</button>
+          <button class="btn btn-next" onclick="nextStep(5)">Review & Send →</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: REVIEW & SEND -->
+      <div class="step" id="step-6">
+        <div class="card-header">
+          <div class="step-tag">Step 06 of 06</div>
+          <h2>Review your brief</h2>
+          <p>Everything looks right? Hit send and I'll be in your inbox within 24 hours.</p>
+        </div>
+        <div class="card-body">
+          <div class="summary-grid" id="summary-grid"><!-- filled by JS --></div>
+
+          <div class="sec-div">Preferred Contact</div>
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">Best way to reach you</label>
+              <select id="f-contact-pref" onchange="save('contactPref',this.value)">
+                <option value="">Select…</option>
+                <option>Email</option>
+                <option>Video call (Zoom / Meet)</option>
+                <option>Loom video exchange</option>
+                <option>LinkedIn message</option>
+                <option>WhatsApp</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="lbl">Availability for discovery call</label>
+              <select id="f-availability" onchange="save('availability',this.value)">
+                <option value="">Select…</option>
+                <option>Weekday mornings (your timezone)</option>
+                <option>Weekday afternoons</option>
+                <option>Weekday evenings</option>
+                <option>Weekends</option>
+                <option>Flexible — send a Calendly link</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="next-steps-box">
+            <div class="nsb-title">// What happens next?</div>
+            <div class="nsb-body">
+              ① I'll review your brief within <strong>24 hours</strong><br>
+              ② I'll reach out to schedule a free 20-min discovery call<br>
+              ③ You'll receive a detailed proposal — fixed price &amp; exact timeline<br>
+              ④ You approve → contract signed → we build
+            </div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="btn btn-back" onclick="prevStep(6)">← Back</button>
+          <button class="btn btn-submit" id="submit-btn" onclick="submitForm()">Send My Brief 🚀</button>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon">✓</div>
+        <h2>Brief received, <span id="success-name">friend</span>!</h2>
+        <p>Your project brief is in my inbox. I'll review it and reach out within <strong style="color:var(--green)">24 hours</strong> to schedule a free discovery call.</p>
+        <div class="success-links">
+          <div class="sl-label">// While you wait</div>
+          <div class="sl-link">📂 Portfolio: <a href="https://freelancer-jowie.vercel.app/" target="_blank">freelancer-jowie.vercel.app</a></div>
+          <div class="sl-link">💼 LinkedIn: <a href="https://linkedin.com/in/jowie-flores-a7aa3b166" target="_blank">jowie-flores-a7aa3b166</a></div>
+          <div class="sl-link">📧 Direct: <a href="/cdn-cgi/l/email-protection#5c36332b35393a30332e392f723a2e3939303d323f392e1c3b313d3530723f3331"><span class="__cf_email__" data-cfemail="ed87829a84888b81829f889ec38b9f8888818c838e889fad8a808c8481c38e8280">[email&#160;protected]</span></a></div>
+        </div>
+        <div class="ref-id">Reference ID: <strong id="ref-id">JOF-000000</strong></div>
+      </div>
+
+    </div><!-- /form-card -->
+
+    <!-- ══ ASIDE ══ -->
+    <aside class="aside">
+      <div class="aside-card">
+        <h3>Why work with me?</h3>
+        <div class="aside-item">
+          <div class="ai-icon">⚡</div>
+          <div><span class="ai-title">Fast & direct</span>No account managers. You talk to the person building your system.</div>
+        </div>
+        <div class="aside-item">
+          <div class="ai-icon">🤖</div>
+          <div><span class="ai-title">AI-first builds</span>I don't just connect apps — I build agents that think, qualify, and act.</div>
+        </div>
+        <div class="aside-item">
+          <div class="ai-icon">📄</div>
+          <div><span class="ai-title">Documentation included</span>Every project ships with video walkthroughs and SOPs.</div>
+        </div>
+        <div class="aside-item">
+          <div class="ai-icon">🔒</div>
+          <div><span class="ai-title">NDA on request</span>Happy to sign before any sensitive discussion.</div>
+        </div>
+        <div class="aside-div"></div>
+        <div class="profile-row">
+          <div class="profile-av">JF</div>
+          <div>
+            <div class="profile-name">Jowie O. Flores</div>
+            <div class="profile-loc">AI Automation Architect · Daet, Bicol PH</div>
+          </div>
+        </div>
+        <div class="aside-div"></div>
+        <div class="tool-cat-label" style="margin-bottom:10px">Tools I use</div>
+        <div class="chip-group">
+          <div class="chip" style="pointer-events:none;cursor:default">n8n</div>
+          <div class="chip" style="pointer-events:none;cursor:default">Make</div>
+          <div class="chip" style="pointer-events:none;cursor:default">Zapier</div>
+          <div class="chip" style="pointer-events:none;cursor:default">GPT-4</div>
+          <div class="chip" style="pointer-events:none;cursor:default">HubSpot</div>
+          <div class="chip" style="pointer-events:none;cursor:default">Supabase</div>
+          <div class="chip" style="pointer-events:none;cursor:default">LangChain</div>
+          <div class="chip" style="pointer-events:none;cursor:default">React</div>
+        </div>
+      </div>
+
+      <div class="aside-card">
+        <h3>What clients say</h3>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.7;font-style:italic;border-left:2px solid var(--green);padding-left:12px;margin-bottom:14px">"Jowie's automation cut our lead response time from 6 hours to under 2 minutes. Absolute game changer."</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3)">— Operations Lead, SaaS Client</div>
+        <div class="aside-div"></div>
+        <div style="font-size:12px;color:var(--ink2);line-height:1.7;font-style:italic;border-left:2px solid var(--green);padding-left:12px;margin-bottom:14px">"Finally a freelancer who documents everything. The SOPs he delivered were production-ready."</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink3)">— Founder, E-commerce Brand</div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<div id="toast">Saved</div>
+
+<script>
+// ══ EMAILJS CONFIG ══
+const EMAILJS_PUBLIC_KEY   = '12DzCncHSL8pAsnlq';
+const EMAILJS_SERVICE_ID   = 'service_yldtfpw';
+const EMAILJS_TEMPLATE_ID  = 'template_ya83xsr'; // brief → to Jowie
+const EMAILJS_AUTOREPLY_ID = 'template_ya83xsr'; // auto-reply → to client (replace with 2nd template ID when ready)
+
+window.addEventListener('load', function () {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+});
+
+// ══ STATE ══
+let formData = {};
+let currentStep = 1;
+const TOTAL = 6;
+const STEP_LABELS = ['','About You','Project Type','Pain Points','Your Stack','Budget & Timeline','Review & Send'];
+const PCT = [0, 17, 33, 50, 67, 83, 100];
+
+const BUDGET_MAP = [
+  [0,  '$500',    'Small discovery or single workflow'],
+  [1,  '$700',    'Simple 1–2 step automation'],
+  [2,  '$1,000',  'Standard automation with integrations'],
+  [3,  '$1,200',  'Standard automation with integrations'],
+  [4,  '$1,500',  'Standard project with AI integration'],
+  [5,  '$2,000',  'Complex system with multiple workflows'],
+  [6,  '$2,500',  'AI agent + CRM + automations'],
+  [7,  '$3,000',  'Full AI system with RAG or custom logic'],
+  [8,  '$4,000',  'Enterprise-level automation system'],
+  [9,  '$5,000',  'Large-scale multi-system integration'],
+  [10, '$5,000+', 'Custom quote — complex enterprise project']
+];
+
+// ══ SAVE ══
+function save(k, v) { formData[k] = v; }
+function cc(k, v, max) {
+  const el = document.getElementById('cc-' + k);
+  if (el) el.textContent = v.length + ' / ' + max;
+}
+
+// ══ BUDGET ══
+function updateBudget(val) {
+  const v = parseInt(val);
+  const [, label, note] = BUDGET_MAP[v];
+  document.getElementById('budget-num').textContent = label.replace('$','');
+  document.getElementById('budget-note').textContent = note;
+  formData.budget = label;
+  const pct = (v / 10) * 100;
+  document.getElementById('f-budget').style.background =
+    `linear-gradient(to right, var(--green) ${pct}%, var(--surface2) ${pct}%)`;
+}
+
+// ══ TOGGLE HELPERS ══
+function toggleCard(el) {
+  el.classList.toggle('selected');
+  const selected = [];
+  document.querySelectorAll('#project-types .sel-card.selected').forEach(c => selected.push(c.dataset.val));
+  formData.projectTypes = selected;
+}
+function togglePain(el) {
+  el.classList.toggle('selected');
+  const selected = [];
+  document.querySelectorAll('#pain-list .pain-item.selected').forEach(c => selected.push(c.dataset.val));
+  formData.painPoints = selected;
+}
+function toggleTool(el) {
+  el.classList.toggle('selected');
+  const selected = [];
+  document.querySelectorAll('.chip.selected').forEach(c => selected.push(c.dataset.val));
+  formData.tools = selected;
+}
+function selectOne(el, group) {
+  const parent = el.closest('.card-grid, .card-grid-3');
+  parent.querySelectorAll('.sel-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  formData[group] = el.dataset.val;
+}
+function selectUrgency(el) {
+  document.querySelectorAll('.urg-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  formData.urgency = el.dataset.val;
+  document.getElementById('e-urgency').classList.remove('show');
+}
+
+// ══ VALIDATION ══
+function validate(step) {
+  let ok = true;
+  const fail = (eid, fid) => {
+    const e = document.getElementById(eid);
+    const f = fid ? document.getElementById(fid) : null;
+    if (e) e.classList.add('show');
+    if (f) f.classList.add('error');
+    ok = false;
+  };
+  const clear = (eid, fid) => {
+    const e = document.getElementById(eid);
+    const f = fid ? document.getElementById(fid) : null;
+    if (e) e.classList.remove('show');
+    if (f) f.classList.remove('error');
+  };
+
+  if (step === 1) {
+    clear('e-fname','f-fname'); clear('e-lname','f-lname'); clear('e-email','f-email');
+    const fn = document.getElementById('f-fname').value.trim();
+    const ln = document.getElementById('f-lname').value.trim();
+    const em = document.getElementById('f-email').value.trim();
+    if (!fn) fail('e-fname','f-fname'); else formData.fname = fn;
+    if (!ln) fail('e-lname','f-lname'); else formData.lname = ln;
+    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) fail('e-email','f-email'); else formData.email = em;
+  }
+  if (step === 2) {
+    clear('e-ptype',null); clear('e-outcome','f-outcome');
+    if (!(formData.projectTypes && formData.projectTypes.length)) fail('e-ptype', null);
+    const oc = document.getElementById('f-outcome').value.trim();
+    if (!oc) fail('e-outcome','f-outcome'); else formData.outcome = oc;
+  }
+  if (step === 3) {
+    clear('e-pain',null);
+    if (!(formData.painPoints && formData.painPoints.length)) fail('e-pain',null);
+  }
+  if (step === 5) {
+    clear('e-urgency',null);
+    if (!formData.urgency) fail('e-urgency',null);
+  }
+  return ok;
+}
+
+// ══ NAVIGATION ══
+function nextStep(from) {
+  if (!validate(from)) { toast('// Fill in the required fields', 'error'); return; }
+  if (from === 5) buildSummary();
+  goTo(from + 1);
+}
+function prevStep(from) { if (from > 1) goTo(from - 1); }
+
+function goTo(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('step-' + n);
+  if (target) target.classList.add('active');
+  currentStep = n;
+
+  document.getElementById('step-label-text').textContent = STEP_LABELS[n];
+  document.getElementById('prog-pct').textContent = PCT[n] + '%';
+  document.getElementById('prog-fill').style.width = PCT[n] + '%';
+
+  document.querySelectorAll('.prog-step').forEach((s, i) => {
+    s.classList.remove('active','done','clickable');
+    const sn = i + 1;
+    if (sn < n) { s.classList.add('done','clickable'); s.onclick = () => goTo(sn); s.style.cursor = 'pointer'; }
+    else if (sn === n) { s.classList.add('active'); s.style.cursor = 'default'; }
+    else { s.style.cursor = 'default'; s.onclick = null; }
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══ SUMMARY ══
+function buildSummary() {
+  const g = formData;
+  const name = [g.fname, g.lname].filter(Boolean).join(' ') || '—';
+  const types = (g.projectTypes || []).map(t => `<span class="sum-chip">${t}</span>`).join('') || '<span class="sum-chip">—</span>';
+  const pains = (g.painPoints || []).map(p => `<span class="sum-chip">${p.split('—')[0].trim()}</span>`).join('') || '—';
+  const tools = (g.tools || []).map(t => `<span class="sum-chip">${t}</span>`).join('') || '<span class="sum-chip">Not specified</span>';
+  const budget = g.budget || '—';
+  const urgency = g.urgency || '—';
+  const engagement = g.engagement || 'Not specified';
+
+  document.getElementById('summary-grid').innerHTML = `
+    <div class="summary-block">
+      <h4>Contact</h4>
+      <p><strong style="color:var(--ink)">${name}</strong><br>${g.email||'—'}${g.company ? '<br>'+g.company : ''}${g.role ? ' · '+g.role : ''}</p>
+    </div>
+    <div class="summary-block">
+      <h4>Source</h4>
+      <p>${g.source || '—'}${g.country ? '<br>'+g.country : ''}</p>
+    </div>
+    <div class="summary-block" style="grid-column:span 2">
+      <h4>Project Types</h4>
+      <div class="sum-chips">${types}</div>
+    </div>
+    <div class="summary-block" style="grid-column:span 2">
+      <h4>Desired Outcome</h4>
+      <p>${g.outcome || '—'}</p>
+    </div>
+    <div class="summary-block" style="grid-column:span 2">
+      <h4>Pain Points</h4>
+      <div class="sum-chips">${pains}</div>
+    </div>
+    ${g.hrs ? `<div class="summary-block"><h4>Hours lost/week</h4><p>${g.hrs}</p></div>` : ''}
+    <div class="summary-block" style="${g.hrs ? '' : 'grid-column:span 2'}">
+      <h4>Budget</h4>
+      <p style="color:var(--green);font-weight:700;font-family:var(--display);font-size:16px">${budget}</p>
+    </div>
+    <div class="summary-block">
+      <h4>Timeline</h4>
+      <p>${urgency}</p>
+    </div>
+    <div class="summary-block">
+      <h4>Engagement</h4>
+      <p>${engagement}</p>
+    </div>
+    <div class="summary-block" style="grid-column:span 2">
+      <h4>Tech Stack</h4>
+      <div class="sum-chips">${tools}</div>
+    </div>
+    ${g.notes ? `<div class="summary-block" style="grid-column:span 2"><h4>Additional Notes</h4><p>${g.notes}</p></div>` : ''}
+  `;
+}
+
+// ══ SUBMIT ══
+async function submitForm() {
+  formData.contactPref = document.getElementById('f-contact-pref').value;
+  formData.availability = document.getElementById('f-availability').value;
+  formData.submittedAt  = new Date().toLocaleString('en-US', { dateStyle:'full', timeStyle:'short' });
+  formData.refId = 'JOF-' + Date.now().toString().slice(-6);
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '// Sending…';
+
+  const painList = (formData.painPoints || []).join(' | ');
+  const typeList = (formData.projectTypes || []).join(', ');
+  const toolList = (formData.tools || []).join(', ');
+  const fullName = `${formData.fname || ''} ${formData.lname || ''}`.trim();
+
+  const briefBody =
+`NEW CLIENT BRIEF — ${formData.refId}
+Submitted: ${formData.submittedAt}
+================================================
+
+CONTACT
+  Name:     ${fullName}
+  Email:    ${formData.email || ''}
+  Company:  ${formData.company || '—'}
+  Role:     ${formData.role || '—'}
+  Country:  ${formData.country || '—'}
+  Website:  ${formData.website || '—'}
+  Source:   ${formData.source || '—'}
+
+PROJECT
+  Types:    ${typeList || '—'}
+  Title:    ${formData.ptitle || '—'}
+  Outcome:  ${formData.outcome || '—'}
+
+PAIN POINTS
+  ${painList || '—'}
+  Hours/week: ${formData.hrs || '—'}
+
+  Problem detail:
+  ${formData.problem || '—'}
+
+TECH STACK
+  Tools:       ${toolList || '—'}
+  Custom:      ${formData.customTools || '—'}
+  Experience:  ${formData['auto-experience'] || '—'}
+
+BUDGET & TIMELINE
+  Budget:      ${formData.budget || '—'}
+  Timeline:    ${formData.urgency || '—'}
+  Engagement:  ${formData.engagement || '—'}
+
+CONTACT PREFERENCE
+  Best reach:    ${formData.contactPref || '—'}
+  Availability:  ${formData.availability || '—'}
+
+NOTES
+  ${formData.notes || 'None'}`;
+
+  // ── Template params for YOUR notification email ──
+  const notifyParams = {
+    to_name:       'Jowie',
+    to_email:      'jowieflores.freelancer@gmail.com',
+    from_name:     fullName,
+    from_email:    formData.email || '',
+    reply_to:      formData.email || '',
+    ref_id:        formData.refId,
+    subject:       `[JOF Brief] ${fullName} — ${typeList || 'New Project'}`,
+    project_types: typeList || '—',
+    budget:        formData.budget || '—',
+    urgency:       formData.urgency || '—',
+    outcome:       formData.outcome || '—',
+    pain_points:   painList || '—',
+    tools:         toolList || '—',
+    company:       formData.company || '—',
+    submitted_at:  formData.submittedAt,
+    message:       briefBody
+  };
+
+  // ── Template params for CLIENT auto-reply email ──
+  const autoReplyParams = {
+    to_name:       formData.fname || 'there',
+    to_email:      formData.email || '',
+    from_name:     'Jowie Flores',
+    from_email:    'jowieflores.freelancer@gmail.com',
+    reply_to:      'jowieflores.freelancer@gmail.com',
+    ref_id:        formData.refId,
+    subject:       `Got your brief, ${formData.fname || 'friend'}! I'll be in touch within 24hrs — JOF`,
+    project_types: typeList || '—',
+    budget:        formData.budget || '—',
+    urgency:       formData.urgency || '—',
+    submitted_at:  formData.submittedAt,
+    message:
+`Hi ${formData.fname || 'there'},
+
+Thanks for reaching out — your project brief is in my inbox and I'm already reading through it.
+
+Here's what happens next:
+
+1. I'll review your brief within 24 hours
+2. I'll reach out to schedule a free 20-min discovery call
+3. You'll receive a detailed proposal with a fixed price and exact timeline
+4. You approve → contract → we build
+
+Your Reference ID: ${formData.refId}
+Project: ${typeList || 'Your Project'}
+Budget Range: ${formData.budget || '—'}
+Timeline: ${formData.urgency || '—'}
+
+In the meantime, feel free to browse my portfolio at https://freelancer-jowie.vercel.app or connect on LinkedIn.
+
+Talk soon,
+Jowie Flores
+AI Automation Architect
+jowieflores.freelancer@gmail.com`
+  };
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, notifyParams);
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, autoReplyParams);
+    showSuccess();
+  } catch(err) {
+    console.error('EmailJS error:', err.text || err);
+    btn.disabled = false;
+    btn.textContent = 'Send My Brief 🚀';
+    // ── GMAIL FALLBACK: open Gmail compose pre-populated with the full brief ──
+    openGmailFallback(briefBody, typeList, fullName);
+  }
+}
+
+function openGmailFallback(briefBody, typeList, fullName) {
+  // Build mailto: URL with pre-populated subject + body for Gmail
+  const subject = encodeURIComponent('[JOF Brief] ' + fullName + ' — ' + (typeList || 'New Project') + ' (' + formData.refId + ')');
+  const body = encodeURIComponent(briefBody);
+  const mailtoUrl = 'https://mail.google.com/mail/?view=cm&to=jowieflores.freelancer@gmail.com&su=' + subject + '&body=' + body;
+
+  // Show the fallback modal
+  document.getElementById('fallback-modal').classList.add('visible');
+  document.getElementById('fallback-gmail-btn').onclick = function() {
+    window.open(mailtoUrl, '_blank');
+    // After they click, show success anyway
+    setTimeout(function() {
+      document.getElementById('fallback-modal').classList.remove('visible');
+      showSuccess();
+    }, 800);
+  };
+}
+
+function showSuccess() {
+  document.querySelector('#form-card .step.active').style.display = 'none';
+  document.getElementById('success-screen').classList.add('visible');
+  document.getElementById('success-name').textContent = formData.fname || 'there';
+  document.getElementById('ref-id').textContent = formData.refId;
+  document.getElementById('progress-steps').style.opacity = '0';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══ TOAST ══
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  setTimeout(() => { t.className = ''; }, 3500);
+}
+
+// ══ INIT ══
+updateBudget(4);
+</script>
+
+<!-- GMAIL FALLBACK MODAL -->
+<div class="fallback-overlay" id="fallback-modal">
+  <div class="fallback-box">
+    <div class="fallback-icon">📬</div>
+    <h3>One more step</h3>
+    <p>The auto-send hit a snag, but <strong>your data is safe</strong>. Click below and Gmail will open with your entire brief already written — just hit Send.</p>
+    <div class="fallback-actions">
+      <button class="btn-gmail" id="fallback-gmail-btn">
+        <span class="btn-gmail-icon">✉️</span>
+        Open Gmail & Send Brief
+      </button>
+    </div>
+    <div class="fallback-note">
+      // Your brief is pre-populated in the email.<br>
+      // Just review and hit Send — takes 5 seconds.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
